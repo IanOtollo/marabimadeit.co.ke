@@ -249,7 +249,7 @@ export function BriefForm() {
               <input id="f-name" value={d.name} onChange={(e) => set("name", e.target.value)} autoComplete="name" className={cn(field, err("name") && "border-danger")} {...inv("name")} />
             </Field>
             <Field id="phone" label="Phone or WhatsApp" error={err("phone")} hint="We usually reply by phone or WhatsApp first.">
-              <input id="f-phone" type="tel" inputMode="tel" value={d.phone} onChange={(e) => set("phone", e.target.value)} autoComplete="tel" className={cn(field, err("phone") && "border-danger")} {...inv("phone")} />
+              <input id="f-phone" type="tel" inputMode="tel" value={d.phone} placeholder="0712 345 678 or +254 712 345 678" onChange={(e) => set("phone", e.target.value)} autoComplete="tel" className={cn(field, err("phone") && "border-danger")} {...inv("phone")} />
             </Field>
             <Field id="email" label="Email" error={err("email")}>
               <input id="f-email" type="email" value={d.email} onChange={(e) => set("email", e.target.value)} autoComplete="email" className={cn(field, err("email") && "border-danger")} {...inv("email")} />

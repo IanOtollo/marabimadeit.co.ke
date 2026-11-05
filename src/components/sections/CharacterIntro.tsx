@@ -45,7 +45,7 @@ export function CharacterIntro() {
           const tone = f.accent === "primary" ? "text-primary" : "text-secondary";
           const chars = Math.round(typed * f.tagline.length);
           return (
-            <motion.article key={f.slug} style={{ opacity: opacities[i] }} aria-hidden={act !== i} className="absolute inset-0 flex items-center justify-center px-4 sm:px-6 lg:px-8">
+            <motion.article key={f.slug} data-marabi-info={f.slug} style={{ opacity: opacities[i], pointerEvents: act === i ? "auto" : "none" }} aria-hidden={act !== i} className="absolute inset-0 flex items-center justify-center px-4 sm:px-6 lg:px-8">
               <p className="text-outline pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2 select-none text-center font-display text-[24vw] font-semibold leading-none tracking-tighter" aria-hidden>
                 {f.first.toUpperCase()}
               </p>

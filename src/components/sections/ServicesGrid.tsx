@@ -9,6 +9,7 @@ import { Eyebrow, Reveal, Section } from "@/components/ui/Reveal";
 import { MarabiHint } from "@/components/bot/MarabiHint";
 import { useContact } from "@/components/layout/Shell";
 import { cn, ease } from "@/lib/utils";
+import { scrollToY } from "@/lib/scroll";
 
 /* ---------- a small drawn illustration for each service, animated when its row opens ---------- */
 function Glyph({ id }: { id: string }) {
@@ -148,6 +149,30 @@ export function ServicesGrid({ heading = true }: { heading?: boolean }) {
     const h = window.location.hash.slice(1);
     if (h && doors.some((d) => d.id === h)) setOpen(h);
   }, []);
+
+  // Fast scrollers (desktop smooth-scroll) used to fly straight past all four services. When someone arrives at this
+  // section at speed, glide them to its start once and let go, so the four services are always seen.
+  useEffect(() => {
+    if (!heading) return;
+    const sec = document.getElementById("services");
+    if (!sec || !window.matchMedia("(hover: hover) and (pointer: fine)").matches || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let prev = window.scrollY;
+    let used = false;
+    const onScroll = () => {
+      const y = window.scrollY;
+      const v = y - prev;
+      prev = y;
+      if (used || !window.__lenis) return;
+      const stop = sec.getBoundingClientRect().top + y - 84;
+      // crossing into the section from above, moving quickly
+      if (v > 28 && y > stop - 420 && y < stop + 140) {
+        used = true;
+        scrollToY(stop, { duration: 1.1, lock: true });
+      }
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [heading]);
 
   return (
     <Section id="services" rail="Services">

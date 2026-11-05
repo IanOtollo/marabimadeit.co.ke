@@ -75,7 +75,7 @@ export function Orb() {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const pos = { x: fine ? window.innerWidth - S - 16 : 16, y: window.innerHeight - S - (fine ? 96 : 24) };
     const vel = { x: 0, y: 0 };
-    const cur = { x: window.innerWidth * 0.7, y: window.innerHeight * 0.6, t: performance.now(), px: 0, py: 0, moved: 0 };
+    const cur = { x: window.innerWidth * 0.7, y: window.innerHeight * 0.6, t: -1e6, px: 0, py: 0, moved: 0 };
     let nudges: number[] = [];
     let lastNudge = 0;
     let raf = 0;
@@ -85,11 +85,12 @@ export function Orb() {
     let lastKey = 0; // last keystroke: while recent, Marabi slides alongside the field, fully visible
     let touchField: HTMLElement | null = null; // a field being used on a touch screen
     let lastScroll = 0;
+    let hopStart = 0; // touch screens: a small hop in place now and then
     let lookUntil = 0; // until then its eyes follow the field being used
     const perchTimer = setInterval(() => {
       const c = ctx.current;
       if (!c.goto && !c.bubble && c.panel === "closed" && !c.asleep && !c.hidden) perchIdx++;
-    }, 28000);
+    }, 12000);
 
     const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
 
@@ -198,6 +199,31 @@ export function Orb() {
     const onFocusOut = () => {
       touchField = null;
     };
+    // Touch screens have no cursor, so Marabi stays lively on its own: it looks where you tap, and every so often glances around and hops in place.
+    const onTap = (e: PointerEvent) => {
+      if (fine || e.pointerType === "mouse") return;
+      cur.x = e.clientX;
+      cur.y = e.clientY;
+      cur.px = e.clientX;
+      cur.py = e.clientY;
+      lookUntil = performance.now() + 1500;
+      const c = ctx.current;
+      if (!c.bubble && c.panel === "closed" && !c.asleep && !c.hidden) c.setMood("curious", 1400);
+    };
+    window.addEventListener("pointerdown", onTap, { passive: true });
+    const engage = fine
+      ? 0
+      : window.setInterval(() => {
+          const c = ctx.current;
+          const now = performance.now();
+          if (c.bubble || c.panel !== "closed" || c.asleep || c.hidden || touchField || now - lastScroll < 2500) return;
+          const moods = ["curious", "happy", "excited", "cheer", "impressed"] as const;
+          c.setMood(moods[Math.floor(Math.random() * moods.length)], 1900);
+          cur.x = Math.random() * window.innerWidth;
+          cur.y = window.innerHeight * (0.2 + Math.random() * 0.6);
+          lookUntil = now + 2200;
+          if (!reduce && Math.random() < 0.6) hopStart = now;
+        }, 9000);
     window.addEventListener("scroll", onScrollTick, { passive: true });
     window.addEventListener("focusout", onFocusOut);
     window.addEventListener("keydown", onKey, true);
@@ -235,9 +261,15 @@ export function Orb() {
         const H = window.innerHeight;
         const onFormPage = window.location.pathname === "/start" && W >= 1024;
         // on the brief page the perches stay in the empty left margin, away from the form and its summary panel
-        const perch = (onFormPage
-          ? [{ x: 10, y: H * 0.5 - S / 2 }, { x: 10, y: H - S - 120 }, { x: 10, y: 130 }]
-          : [{ x: W - S - 84, y: H - S - 110 }, { x: 28, y: H - S - 110 }, { x: W - S - 84, y: 120 }, { x: 28, y: H * 0.45 }])[perchIdx % (onFormPage ? 3 : 4)];
+        // wide screens leave an empty margin on the right of the brief page as well, so it can roam both sides
+        const roomRight = (W - 1280) / 2 >= S + 20;
+        const rx = Math.min(W - S - 10, (W + 1280) / 2 + 10);
+        const perches = onFormPage
+          ? roomRight
+            ? [{ x: 10, y: H * 0.5 - S / 2 }, { x: rx, y: 130 }, { x: 10, y: H - S - 120 }, { x: rx, y: H * 0.55 }, { x: 10, y: 130 }, { x: rx, y: H - S - 120 }]
+            : [{ x: 10, y: H * 0.5 - S / 2 }, { x: 10, y: H - S - 120 }, { x: 10, y: 130 }]
+          : [{ x: W - S - 84, y: H - S - 110 }, { x: 28, y: H * 0.45 }, { x: W - S - 84, y: 120 }, { x: 28, y: H - S - 110 }, { x: W - S - 84, y: H * 0.5 }, { x: 28, y: 120 }];
+        const perch = perches[perchIdx % perches.length];
         const a = t / 1100;
         let tx = perch.x + Math.cos(a * 0.5) * 10;
         let ty = perch.y + Math.sin(a) * 6;
@@ -252,10 +284,10 @@ export function Orb() {
         }
         return { x: tx, y: ty };
       }
-      // Touch screens: stay out of the way. While a field is in use, sit up under the header; while the page scrolls, glide gently toward the edge.
+      // Touch screens: stay out of the way. While a field is in use, sit up under the header; while the page scrolls it only fades, it never leaves the screen.
       if (!fine && touchField) return { x: 12, y: 84 };
-      const tuck = !fine && performance.now() - lastScroll < 800;
-      return { x: tuck ? -S * 0.3 : 16, y: window.innerHeight - S - 24 + (reduce ? 0 : Math.sin(t / 700) * 4) };
+      const hop = performance.now() - hopStart < 700 ? Math.abs(Math.sin(((performance.now() - hopStart) / 700) * Math.PI * 2)) * 22 : 0;
+      return { x: 16, y: window.innerHeight - S - 24 - hop + (reduce ? 0 : Math.sin(t / 700) * 4) };
     };
 
     const tick = (t: number) => {
@@ -264,8 +296,13 @@ export function Orb() {
       const k = reduce ? 1 : 0.07;
       vel.x = vel.x * 0.8 + (tg.x - pos.x) * k;
       vel.y = vel.y * 0.8 + (tg.y - pos.y) * k;
-      pos.x = clamp(pos.x + vel.x, -S, window.innerWidth + S);
-      pos.y = clamp(pos.y + vel.y, -S, window.innerHeight + S);
+      // a hard limit: Marabi is always fully on screen, whatever its momentum
+      const nx = pos.x + vel.x;
+      const ny = pos.y + vel.y;
+      pos.x = clamp(nx, 4, Math.max(4, window.innerWidth - S - 4));
+      pos.y = clamp(ny, 4, Math.max(4, window.innerHeight - S - 4));
+      if (pos.x !== nx) vel.x = 0;
+      if (pos.y !== ny) vel.y = 0;
       el.style.transform = `translate3d(${pos.x}px, ${pos.y}px, 0)`;
       // on touch screens it also fades while the page scrolls or a field is in use, so it never competes with content
       el.style.opacity = !fine && performance.now() - lastScroll < 800 ? "0.38" : !fine && touchField ? "0.7" : "1";
@@ -300,6 +337,8 @@ export function Orb() {
       cancelAnimationFrame(raf);
       clearInterval(perchTimer);
       window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerdown", onTap);
+      clearInterval(engage);
       window.removeEventListener("scroll", onScrollTick);
       window.removeEventListener("focusout", onFocusOut);
       window.removeEventListener("keydown", onKey, true);

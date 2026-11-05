@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
-import { composeBrief, serviceLabel, validate, type BriefData } from "@/data/brief";
-import { mailConfigured, sendBrief } from "@/lib/mail";
+import { serviceLabel, validate, type BriefData } from "@/data/brief";
+import { mailConfigured, sendMail, sendThanks } from "@/lib/mail";
+import { site } from "@/data/site";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -54,15 +55,34 @@ export async function POST(req: Request) {
   const d6 = new Date().toISOString().slice(2, 10).replace(/-/g, "");
   const ref = `MM-${d6}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`;
   try {
-    await sendBrief({
+    await sendMail({
       subject: `New project brief ${ref}: ${serviceLabel(d.service)} (${d.name})`,
-      text: composeBrief(d, ref),
+      kind: "New project brief",
+      ref,
+      rows: [
+        ["Name", d.name],
+        ["Phone / WhatsApp", d.phone],
+        ["Email", d.email],
+        ["Organisation", d.org],
+        ["Service", serviceLabel(d.service)],
+        ["Existing site", d.site],
+        ["Needs", d.scope.join(", ")],
+        ["Timing", d.timing],
+        ["Budget", d.budget],
+      ],
+      sections: [
+        { heading: "What they want to achieve", body: d.description },
+        { heading: "Notes", body: d.notes },
+      ],
       replyTo: d.email.trim(),
       replyName: d.name.trim(),
+      whatsapp: d.phone,
     });
   } catch (e) {
     console.error("[brief] mail error:", e instanceof Error ? e.message : e);
     return NextResponse.json({ ok: false, fallback: true }, { status: 502 });
   }
+  // the thank-you to the client: a failure here must never fail their brief
+  await sendThanks({ to: d.email.trim(), name: d.name, kind: "brief", ref, phone: site.phone, whatsapp: site.whatsapp }).catch((e) => console.error("[brief] thanks error:", e instanceof Error ? e.message : e));
   return NextResponse.json({ ok: true, ref });
 }
