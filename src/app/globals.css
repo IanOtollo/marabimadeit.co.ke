@@ -1,0 +1,65 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Palette: ink + bone, with two "avatar" accents.
+   primary   = Mind-Stone gold  (Brother One)
+   secondary = Vibranium teal   (Brother Two) */
+:root {
+  --background: 220 14% 5%;
+  --foreground: 40 20% 94%;
+  --card: 220 12% 8%;
+  --primary: 44 100% 58%;
+  --primary-foreground: 220 14% 5%;
+  --secondary: 178 70% 52%;
+  --secondary-foreground: 220 14% 5%;
+  --muted: 220 10% 12%;
+  --muted-foreground: 220 8% 62%;
+  --accent: 220 10% 14%;
+  --danger: 8 85% 58%;
+  --border: 220 10% 18%;
+  --radius: 0.75rem;
+}
+
+html[data-launch="skip"] #launch { display: none; }
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-stopped { overflow: hidden; }
+
+@layer base {
+  * { @apply border-border; }
+  html { color-scheme: dark; }
+  body {
+    @apply bg-background text-foreground font-sans antialiased leading-relaxed;
+  }
+  h1, h2, h3, h4 { @apply font-display tracking-tight leading-tight; }
+  ::selection { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); }
+}
+
+@layer utilities {
+  .sr-only-focusable:not(:focus) {
+    position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);
+  }
+  .marabi-ring {
+    position: relative;
+    z-index: 5;
+    animation: marabi-glow 1.1s ease-out 3;
+  }
+  .text-outline {
+    color: transparent;
+    -webkit-text-stroke: 1px hsl(var(--foreground) / 0.18);
+  }
+  .ruler {
+    background-image: repeating-linear-gradient(
+      to bottom, hsl(var(--border)) 0 1px, transparent 1px 0.5rem);
+  }
+}
+
+@keyframes marabi-glow {
+  0% { box-shadow: 0 0 0 0 hsl(var(--primary) / 0.7); }
+  100% { box-shadow: 0 0 0 18px hsl(var(--primary) / 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
