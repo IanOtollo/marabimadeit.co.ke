@@ -128,7 +128,7 @@ export const topics: Topic[] = [
     keywords: ["where", "location", "nairobi", "office", "meet", "visit", "address", "remote", "call", "phone", "whatsapp", "email", "contact"],
     short: "Based in Nairobi. We work with clients across Kenya and beyond, by call, WhatsApp or in person.",
     answer:
-      "We are based in Nairobi and work with clients across Kenya and beyond, by call, WhatsApp, email or in person. We reply within one business day.",
+      "We are based in Nairobi and work with clients across Kenya and beyond, by call, WhatsApp, email or in person. We'll get back to you.",
     follow: ["start", "timeline", "team"],
     link: { href: "/contact", label: "Contact us" },
   },
@@ -158,7 +158,7 @@ export const topics: Topic[] = [
     keywords: ["start", "begin", "hire", "get started", "kickoff", "proposal", "work with you", "contact", "enquire", "enquiry"],
     short: "I can package your project brief for the team in under a minute.",
     answer:
-      "The easiest way is with me: five quick taps, one or two typed lines, and I will package your brief and hand it to the team by WhatsApp or email. You get a reply within one business day and a written proposal after a free call.",
+      "The easiest way is the project brief: it takes about three minutes and only five details are required. It reaches both founders directly. You get a quick personal reply and a written proposal after a first call.",
     follow: ["timeline", "process"],
   },
   {
@@ -177,7 +177,7 @@ export const topics: Topic[] = [
     keywords: ["price", "pricing", "cost", "how much", "quote", "rates", "budget", "fee", "expensive", "cheap", "afford"],
     short: "We do not publish rates. Every project is quoted on its own, after a short call.",
     answer:
-      "We do not publish a price list, because a five-page site and a full ERP are very different jobs and a single number would mislead you. Instead we have a short free call, learn what you need, and send a written quote that fits your scope. Tell me a little about your project and I will package it for the team.",
+      "We do not publish a price list, because a five-page site and a full ERP are very different jobs and a single number would mislead you. Instead we have a short call, learn what you need, and send a written quote that fits your scope. Tell me a little about your project and I will package it for the team.",
     follow: ["start", "timeline", "process"],
   },
   {
@@ -209,6 +209,61 @@ export const topics: Topic[] = [
     follow: ["security", "ownership", "start"],
     link: { href: "/terms", label: "Open the Terms" },
   },
+  {
+    id: "formwrite",
+    title: "What to write",
+    keywords: ["what should i write", "what do i write", "description", "describe", "example", "how to fill", "fill in", "what to put"],
+    short: "One or two plain sentences about what you want to achieve is enough.",
+    answer:
+      "Write it the way you would explain it to a friend: who it is for, what it should do, and what is wrong with how things work now. You do not need technical words. For example: \"I sell handmade bags on Instagram and want a store where customers pay with M-Pesa.\" The more concrete the goal, the more useful our first call will be.",
+    follow: ["formservice", "formnext", "formdata"],
+  },
+  {
+    id: "formservice",
+    title: "Choosing a service",
+    keywords: ["which service", "what service", "which one", "not sure", "unsure", "which do i need", "what do i need", "choose"],
+    short: "Pick the closest one. If you are unsure, choose Not sure yet.",
+    answer:
+      "Need people to find and trust you online: Websites. Selling products and taking payments: E-commerce. A process that off-the-shelf tools cannot handle: Custom software. Customers, stock and invoices scattered across tools: CRM and ERP. If it is a mix, or you are not sure, choose Not sure yet and describe the goal. We will suggest the right approach on the first call.",
+    follow: ["formwrite", "formnext", "websites"],
+  },
+  {
+    id: "formrequired",
+    title: "Required details",
+    keywords: ["required", "why phone", "why do you need", "phone number", "mandatory", "why my number"],
+    short: "Five details are required. The rest is optional.",
+    answer:
+      "Name, phone or WhatsApp, email, the service, and a sentence about the project. The phone number is required because most replies start with a quick call or WhatsApp message, which is far faster than back-and-forth emails. Everything else is optional and only helps us prepare.",
+    follow: ["formdata", "formnext", "formwrite"],
+  },
+  {
+    id: "formscope",
+    title: "Scope and timing",
+    keywords: ["scope", "budget range", "timing", "when to start", "why budget", "why timing", "optional"],
+    short: "Optional, and only to help us prepare for the first call.",
+    answer:
+      "The scope chips show what projects like yours usually involve, so tick what sounds right and skip the rest. Timing is flexible and agreed with you. The budget range is optional and never shown publicly: it only helps us suggest the right shape for your project.",
+    follow: ["formnext", "formdata", "formwrite"],
+  },
+  {
+    id: "formnext",
+    title: "After you send",
+    keywords: ["after i send", "what happens next", "after sending", "reply", "response time", "how soon will you reply"],
+    short: "We'll get back to you, then a first call and a written proposal.",
+    answer:
+      "You get a reference number straight away. We'll get back to you by phone, WhatsApp or email, then arrange a first call. After that you receive a written proposal with scope, plan and quote, with no obligation to proceed.",
+    follow: ["formdata", "timeline", "process"],
+  },
+  {
+    id: "formdata",
+    title: "Your data",
+    keywords: ["is my data safe", "my data", "privacy", "who sees this", "is it safe", "stored", "confidential"],
+    short: "Seen only by the founders, never sold.",
+    answer:
+      "Your brief goes only to the two founders, by WhatsApp or email, and is used only to reply to you and prepare a proposal. It is never sold or shared for marketing. While you type, a draft is saved on your own device only, and is deleted when you send. You can ask us to delete your details at any time. The Privacy Policy has the full detail.",
+    follow: ["formnext", "security", "formrequired"],
+    link: { href: "/privacy", label: "Read the Privacy Policy" },
+  },
 ];
 
 export const byId = (id: string) => topics.find((t) => t.id === id);
@@ -227,13 +282,19 @@ export const details: Record<string, string[]> = {
   ownership: ["Hosting, domains and accounts are set up in your name.", "Credentials, documentation and a recorded walkthrough are handed over.", "We list the open-source tools we used, so nothing is hidden."],
   support: ["Maintenance plans add monitoring, security updates and backups.", "Response targets are agreed in writing, not promised vaguely.", "You can take everything in-house; the handover makes that possible."],
   team: ["You work directly with them, not with an account manager.", "Aineah leads the engineering and architecture; Ian builds alongside him.", "The about page has their introductions and ability cards."],
-  location: ["Reach us on WhatsApp, by call or by email.", "We reply within one business day.", "A first call is free and carries no obligation."],
+  location: ["Reach us on WhatsApp, by call or by email.", "We'll get back to you.", "A first call carries no obligation."],
   work: ["Projects are numbered in the order they were built and grouped by year.", "Filter by the tools used, or open a service to see its own projects.", "Ask us for references on anything similar to yours."],
   security: ["MFA on admin accounts, backups and regular patching.", "An NDA is signed before you share anything sensitive.", "Our Security page explains how to report a vulnerability to us."],
-  start: ["Four short steps: what, where you are, when, and how to reach you.", "You send it by WhatsApp or email from your own app; nothing is stored until you do.", "We reply within one business day, then offer a free call."],
-  quote: ["A short free call to understand your scope.", "A written quote that fits what you actually need.", "Third-party costs such as domains and SMS are listed separately."],
+  start: ["A short page of four sections: about you, the project, scope and timing, and notes.", "Five details are required; everything else is optional.", "We'll get back to you, then arrange a first call."],
+  quote: ["A short call to understand your scope.", "A written quote that fits what you actually need.", "Third-party costs such as domains and SMS are listed separately."],
   partners: ["Jewel in the Mines, Ethereal Dayo, Mutende Pharmacare, Ficus & Figs, Dualpix Communications, IKA360 and Zoho.", "Their work spans publishing, retail, hospitality, healthcare, communications and software.", "A brand joins the wall only after we have worked together."],
   story: ["From evening projects to small client work to a studio with a process.", "The about page walks through it in five moments.", "Our name is our signature: Marabi made it."],
+  formwrite: ["One or two plain sentences are enough.", "Say who it is for and what it should do, not how to build it.", "A concrete example appears under the box and changes with the service you pick."],
+  formservice: ["Pick the closest one: you can change it any time before sending.", "Not sure yet is a perfectly good answer.", "We will confirm the right approach on the first call."],
+  formrequired: ["Five details are required: name, phone, email, service, and a sentence about the project.", "The phone number lets us reply with a call or WhatsApp, which is faster than email.", "Everything else is optional."],
+  formscope: ["Tick what sounds right and skip the rest.", "Timing is flexible and agreed with you.", "The budget range is optional and never shown publicly."],
+  formnext: ["You receive a reference number straight away.", "We'll get back to you, then arrange a first call.", "A written proposal follows, with no obligation."],
+  formdata: ["Seen only by the founders.", "Used only to reply and prepare a proposal, never sold.", "Your draft stays on your own device until you send it."],
   legal: ["Each document opens with an at-a-glance summary.", "Written against Kenyan law and meant to be read.", "Payment terms sit under Engagement and Payment."],
 };
 
@@ -241,16 +302,44 @@ const norm = (s: string) => s.toLowerCase().replace(/[^a-z0-9\s']/g, " ").replac
 
 /** Greetings, thanks, "who are you": answered like a person, not a database. */
 export function smallTalk(input: string, name?: string): { text: string; chips?: string[] } | null {
-  const t = norm(input);
+  const t = norm(input).replace(/'/g, " ").replace(/\s+/g, " ");
   const who = name ? `, ${name}` : "";
   if (/^(hi|hello|hey|habari|sasa|mambo|niaje|hola|good (morning|afternoon|evening))\b/.test(t))
     return { text: `Habari${who}! What can I help you with: a service, how we work, or starting a project?`, chips: ["What can you build?", "How do you work?", "Start a project"] };
   if (/\b(thanks|thank you|asante|cheers|appreciate)\b/.test(t)) return { text: `Karibu${who}. Anything else you would like to know?`, chips: ["Start a project", "How do you work?"] };
   if (/^(bye|goodbye|see you|kwaheri|later)\b/.test(t)) return { text: `Kwaheri${who}. I will be here when you need me.` };
   if (/(who|what) are you|are you (a )?(bot|ai|human|real|robot|person)|your name/.test(t))
-    return { text: "I am Marabi 2.0, the studio's built-in assistant. I am not a person and not a general AI: I answer from the studio's own notes, and anything I cannot answer I hand to Aineah and Ian, who reply within one business day.", chips: ["Send it to the team", "What can you build?"] };
+    return { text: "I am Marabi 2.0, the studio's built-in assistant. I am not a person and not a general AI: I answer from the studio's own notes, and anything I cannot answer I hand to Aineah and Ian, who reply personally and fast.", chips: ["Send it to the team", "What can you build?"] };
   if (/(speak|talk) to (a |the )?(human|person|someone|team|founder)|call (me|you)|phone number|whatsapp/.test(t))
-    return { text: "Of course. The quickest way is to start a brief and send it by WhatsApp, or call and message from the icons on the home page. We reply within one business day.", chips: ["Start a project"] };
+    return { text: "Of course. The quickest way is to start a brief and send it by WhatsApp, or call and message from the icons on the home page. We reply fast.", chips: ["Start a project"] };
+  if (/\b(how are you|how are things|how s it going|how is it going|how do you do|u good|you good|whats up|what s up|wassup)\b/.test(t))
+    return { text: `I am doing well${who}, thank you for asking. It is a good day when someone drops by. How can I help?`, chips: ["What can you build?", "Start a project"] };
+  if (/\b(good|great|fine|well|okay|ok|not bad|nice)\b/.test(t) && t.split(" ").length <= 4 && /^(i m|im|i am|am|doing|all|pretty|very|quite)\b/.test(t))
+    return { text: "Glad to hear it. Is there something about the studio or a project I can help with?", chips: ["What can you build?", "How do you work?"] };
+  if (/\b(tired|sad|stressed|bad day|not good|not well|overwhelmed)\b/.test(t) && t.split(" ").length <= 8)
+    return { text: `Sorry to hear that${who}. I hope it gets lighter soon. If a project is part of the stress, tell me about it and we will help make it simpler.`, chips: ["Start a project"] };
+  if (/\b(good (night)|goodnight|sleep well|have a (good|nice|great))\b/.test(t)) return { text: `You too${who}. Come back any time.` };
+  if (/\b(sorry|my bad|apologies)\b/.test(t) && t.split(" ").length <= 5) return { text: "No problem at all. Carry on, I am listening." };
+  if (/^(ok|okay|cool|nice|great|awesome|sawa|poa|alright|got it|i see|makes sense|fine)\b/.test(t) && t.split(" ").length <= 3)
+    return { text: "Sawa. Anything else I can help with?", chips: ["Start a project", "How do you work?"] };
+  if (/^(yes|yeah|yep|yup|ndiyo|sure)\b/.test(t) && t.split(" ").length <= 2) return { text: "Great. What would you like to look at: our services, how we work, or starting a project?", chips: ["What can you build?", "How do you work?", "Start a project"] };
+  if (/^(no|nope|nah|hapana)\b/.test(t) && t.split(" ").length <= 2) return { text: "That is fine. I am here if you change your mind.", chips: ["What can you build?"] };
+  if (/\b(you re (cool|nice|great|smart|funny|awesome|amazing|helpful)|love you|well done|good bot|nice bot|good job)\b/.test(t))
+    return { text: "That is kind of you, thank you. I will tell the team their assistant is doing something right.", chips: ["Start a project"] };
+  if (/\b(stupid|useless|dumb|bad bot|hate you|rubbish)\b/.test(t)) return { text: "Fair enough, I am limited to what the studio has taught me. Tell me what you were after and I will either answer or pass it to Aineah and Ian.", chips: ["Send it to the team"] };
+  if (/\b(joke|funny|make me laugh)\b/.test(t))
+    return { text: "A developer's partner says: go to the shop, buy a loaf of bread, and if they have eggs, buy six. He came back with six loaves. They had eggs.", chips: ["Another one", "What can you build?"] };
+  if (/\b(another one|one more)\b/.test(t)) return { text: "Why did the website go to therapy? Too many unresolved issues, and a very slow response time. We fix both.", chips: ["Start a project"] };
+  if (/\b(what time|what s the time|what day|what date|today s date)\b/.test(t))
+    return { text: `It is ${new Date().toLocaleString("en-KE", { weekday: "long", hour: "2-digit", minute: "2-digit", timeZone: "Africa/Nairobi" })} in Nairobi.` };
+  if (/\b(weather|football|politics|news|bitcoin|stock)\b/.test(t))
+    return { text: "That is outside my patch, I only know the studio. I can tell you about our services, our process or how to start a project.", chips: ["What can you build?", "Start a project"] };
+  if (/\b(where are you|where do you live|where are you based|location|nairobi)\b/.test(t) && t.split(" ").length <= 6)
+    return { text: "We are a Nairobi studio and work with clients across Kenya and beyond, mostly remotely. Calls and WhatsApp work well.", chips: ["Start a project"] };
+  if (/\b(what can you do|help me|can you help|what do you know)\b/.test(t))
+    return { text: "I can explain our services, how we work and the partners we have built with, help you shape a project brief, or pass a message to the founders.", chips: ["What can you build?", "How do you work?", "Start a project"] };
+  if (/\b(do you (sleep|eat|dream)|are you (alive|happy|sad|tired))\b/.test(t))
+    return { text: "I nap in the logo after five quiet minutes, which is as close as a studio assistant gets. Mostly I stay curious." };
   return null;
 }
 
@@ -262,7 +351,7 @@ export function followUp(input: string, last: Topic | null): { text: string; lin
   if (/how long|when|timeline|how soon|deadline/.test(t) && short)
     return { text: `For ${last.title.toLowerCase()}: there is no fixed number. It depends on scope, how quickly content and feedback arrive, and our task load, and it can stretch if the workload does. We agree a realistic plan in your proposal and tell you early if anything shifts.` };
   if (/(how much|cost|price|quote|rates|expensive)/.test(t) && short)
-    return { text: `We quote ${last.title.toLowerCase()} individually after a short free call, so the number fits your scope. I can package your brief for the team in a few taps.` };
+    return { text: `We quote ${last.title.toLowerCase()} individually after a short call, so the number fits your scope. I can package your brief for the team in a few taps.` };
   if (/\b(more|detail|details|explain|elaborate|tell me more|go deeper|what else)\b/.test(t) && short) {
     const d = details[last.id];
     if (d) return { text: d.map((x, i) => `${i + 1}. ${x}`).join("\n"), link: last.link };

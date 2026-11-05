@@ -2,18 +2,18 @@ import type { Metadata } from "next";
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
 import { site } from "@/data/site";
 import { Eyebrow, Reveal, Section } from "@/components/ui/Reveal";
-import { ContactForm } from "@/components/layout/ContactForm";
+import Link from "next/link";
 import { LocalClock } from "@/components/layout/LocalClock";
 import { MarabiHint } from "@/components/bot/MarabiHint";
 
 export const metadata: Metadata = {
   title: "Contact",
-  description: "Start a project with Marabi Made It. Tell us what you want to build and we will reply within one business day.",
+  description: "Start a project with Marabi Made It. Tell us what you want to build and a founder will get back to you quickly.",
 };
 
 const steps = [
   { t: "You write to us", d: "Tell us the problem and what you need." },
-  { t: "We reply in one business day", d: "A short call to understand your goals, free of charge." },
+  { t: "A founder replies, fast", d: "A short call to understand your goals." },
   { t: "You get a written proposal", d: "Scope, plan and a written quote. No obligation to proceed." },
 ];
 
@@ -44,7 +44,12 @@ export default function ContactPage() {
         </Reveal>
         <Reveal delay={0.1}>
           <div className="rounded-2xl border border-border/50 bg-card p-6 sm:p-8">
-            <ContactForm />
+            <h2 className="text-2xl">Prefer to put it in writing?</h2>
+            <p className="mt-3 text-muted-foreground">Our project brief takes about three minutes. Five details are required and the rest is optional. It reaches both founders directly.</p>
+            <Link href="/start" className="mt-6 inline-block rounded-xl bg-primary px-6 py-3 font-medium text-primary-foreground transition hover:opacity-90">
+              Open the project brief
+            </Link>
+            <p className="mt-4 text-sm text-muted-foreground">Or message us on WhatsApp, or call, using the details on the left.</p>
           </div>
         </Reveal>
       </div>

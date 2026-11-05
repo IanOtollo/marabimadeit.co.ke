@@ -21,3 +21,15 @@ Import the repository into Vercel. No environment variables or configuration are
 - `src/data/projects.ts` – past projects (empty by design; add entries and they appear on `/work` and each service page)
 - `src/data/legal.ts` – the seven legal documents
 - `public/partners` – drop partner SVG logos here and set `logo` on the partner in `site.ts`
+
+## Project brief
+
+The `/start` page posts to `/api/brief`, which emails the brief to the studio Gmail inbox (reply goes to the client). Set these in Vercel (Project, Settings, Environment Variables) and redeploy once; locally put them in `.env.local` (see `.env.example`):
+
+| Variable | Value |
+|---|---|
+| `GMAIL_USER` | marabimadeit@gmail.com |
+| `GMAIL_APP_PASSWORD` | A Google app password (needs 2-Step Verification on). Never commit it |
+| `MAIL_TO` | Optional: where briefs are delivered, defaults to `GMAIL_USER` |
+
+Until they are set, or if Gmail is down, the page hands the brief over by WhatsApp or email so nothing is lost.

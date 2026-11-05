@@ -1,11 +1,11 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { byId, details, topics, type Topic } from "@/data/botKnowledge";
 
-export type Mood = "idle" | "happy" | "mad" | "sleepy" | "excited" | "talking";
-export type PanelMode = "closed" | "chat" | "start";
+export type Mood = "idle" | "happy" | "mad" | "sleepy" | "excited" | "talking" | "curious" | "thinking" | "impressed" | "concerned" | "cheer" | "reading";
+export type PanelMode = "closed" | "chat";
 export type Reaction = { kind: "whatsapp" | "call" | "email" | "cta"; id: number };
 export type Preset = { door?: string; note?: string };
 export type Bubble = { id: number; text: string; topic?: string; bullets?: string[]; actions?: { label: string; run: () => void }[] };
@@ -22,7 +22,6 @@ type Ctx = {
   bubble: Bubble | null;
   goto: { el: HTMLElement; id: number } | null;
   spark: { el: HTMLElement; id: number } | null;
-  preset: Preset | null;
   ask: { topic: string; id: number } | null;
   reaction: Reaction | null;
   askTopic: (topic: string) => void;
@@ -31,7 +30,6 @@ type Ctx = {
   registerDock: (el: HTMLElement | null) => void;
   openChat: () => void;
   openStart: (p?: Preset) => void;
-  openFullForm: () => void;
   close: () => void;
   wake: () => void;
   sleep: () => void;
@@ -39,6 +37,8 @@ type Ctx = {
   setMood: (m: Mood, ms?: number) => void;
   say: (b: Omit<Bubble, "id">, ms?: number) => void;
   dismissBubble: () => void;
+  pauseBubble: () => void;
+  resumeBubble: (ms?: number) => void;
   explain: (topic: string, el?: HTMLElement | null) => void;
   pointTo: (el: HTMLElement) => void;
   remember: (m: Partial<Memory>) => void;
@@ -60,7 +60,7 @@ const read = (): Memory => {
   }
 };
 
-export function MarabiProvider({ children, onFullForm }: { children: React.ReactNode; onFullForm: () => void }) {
+export function MarabiProvider({ children }: { children: React.ReactNode }) {
   const [panel, setPanel] = useState<PanelMode>("closed");
   const [asleep, setAsleep] = useState(false);
   const [hidden, setHidden] = useState(false);
@@ -68,10 +68,12 @@ export function MarabiProvider({ children, onFullForm }: { children: React.React
   const [bubble, setBubble] = useState<Bubble | null>(null);
   const [goto, setGoto] = useState<Ctx["goto"]>(null);
   const [spark, setSpark] = useState<Ctx["spark"]>(null);
-  const [preset, setPreset] = useState<Preset | null>(null);
   const [ask, setAsk] = useState<{ topic: string; id: number } | null>(null);
   const [reaction, setReaction] = useState<Reaction | null>(null);
   const router = useRouter();
+  const path = usePathname();
+  const pathRef = useRef(path);
+  pathRef.current = path;
   const [dock, setDock] = useState<HTMLElement | null>(null);
   const [memory, setMemory] = useState<Memory>({});
   const seq = useRef(0);
@@ -114,6 +116,13 @@ export function MarabiProvider({ children, onFullForm }: { children: React.React
     setBubble(null);
   }, []);
 
+  /** While the visitor's pointer is on the bubble's buttons, it stays; it leaves a few seconds after they move away. */
+  const pauseBubble = useCallback(() => clearTimeout(bubbleTimer.current), []);
+  const resumeBubble = useCallback((ms = 6000) => {
+    clearTimeout(bubbleTimer.current);
+    bubbleTimer.current = setTimeout(() => setBubble(null), ms);
+  }, []);
+
   const say = useCallback((b: Omit<Bubble, "id">, ms = 9000) => {
     clearTimeout(bubbleTimer.current);
     bubbleAt.current = Date.now();
@@ -154,14 +163,19 @@ export function MarabiProvider({ children, onFullForm }: { children: React.React
     setPanel("chat");
   }, [wake]);
 
+  /** Every "Start a project" leads to the formal brief page, carrying across anything already known. */
   const openStart = useCallback(
     (p?: Preset) => {
       wake();
       setBubble(null);
-      setPreset(p ?? null);
-      setPanel("start");
+      setPanel("closed");
+      const q = new URLSearchParams();
+      if (p?.door) q.set("service", p.door);
+      if (p?.note) q.set("note", p.note.slice(0, 600));
+      const qs = q.toString();
+      router.push(`/start${qs ? `?${qs}` : ""}`);
     },
-    [wake],
+    [wake, router],
   );
 
   const close = useCallback(() => setPanel("closed"), []);
@@ -385,6 +399,33 @@ export function MarabiProvider({ children, onFullForm }: { children: React.React
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // On the brief page Marabi introduces itself once, as a companion to the form and nothing more.
+  useEffect(() => {
+    if (path !== "/start" || hidden || asleep) return;
+    const t = setTimeout(() => {
+      if (pathRef.current !== "/start" || panelRef.current !== "closed" || document.querySelector('[role="dialog"][aria-label="Cookie consent"]')) return;
+      let seen = false;
+      try {
+        seen = sessionStorage.getItem("mmi-bot-form-hello") === "1";
+        sessionStorage.setItem("mmi-bot-form-hello", "1");
+      } catch {}
+      if (seen) return;
+      say(
+        {
+          text: "I can help with this brief. Click the ? beside any section to see why we ask, or describe your project in the box and I will suggest the right service.",
+          actions: [
+            { label: "What should I write?", run: () => askTopic("formwrite") },
+            { label: "Which service?", run: () => askTopic("formservice") },
+          ],
+        },
+        9000,
+      );
+      setMood("happy", 1600);
+    }, 2500);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [path, hidden, asleep]);
+
   // one gentle hello per visit
   useEffect(() => {
     if (hidden || asleep) return;
@@ -415,12 +456,12 @@ export function MarabiProvider({ children, onFullForm }: { children: React.React
 
   const value = useMemo<Ctx>(
     () => ({
-      panel, asleep, hidden, mood, bubble, goto, spark, preset, ask, reaction, askTopic, name: memory.name, dock, memory,
+      panel, asleep, hidden, mood, bubble, goto, spark, ask, reaction, askTopic, name: memory.name, dock, memory,
       registerDock: setDock,
-      openChat, openStart, openFullForm: () => { setPanel("closed"); onFullForm(); },
-      close, wake, sleep, hide, setMood, say, dismissBubble, explain, pointTo, remember,
+      openChat, openStart,
+      close, wake, sleep, hide, setMood, say, dismissBubble, pauseBubble, resumeBubble, explain, pointTo, remember,
     }),
-    [panel, asleep, hidden, mood, bubble, goto, spark, preset, ask, reaction, askTopic, memory, dock, openChat, openStart, close, wake, sleep, hide, setMood, say, dismissBubble, explain, pointTo, remember, onFullForm],
+    [panel, asleep, hidden, mood, bubble, goto, spark, ask, reaction, askTopic, memory, dock, openChat, openStart, close, wake, sleep, hide, setMood, say, dismissBubble, pauseBubble, resumeBubble, explain, pointTo, remember],
   );
 
   return <C.Provider value={value}>{children}</C.Provider>;

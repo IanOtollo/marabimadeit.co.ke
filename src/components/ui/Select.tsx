@@ -9,11 +9,12 @@ import { cn } from "@/lib/utils";
  * Fully keyboard operable (arrows, Enter, Space, Escape, Home/End) and screen-reader friendly.
  * It writes its value into a hidden input so it works inside an ordinary <form>.
  */
-export function Select({ name, options, defaultValue, label, className }: { name: string; options: string[]; defaultValue?: string; label: string; className?: string }) {
+export function Select({ name, options, defaultValue, label, className, placeholder, value: controlled, onChange }: { name: string; options: string[]; defaultValue?: string; label: string; className?: string; placeholder?: string; value?: string; onChange?: (v: string) => void }) {
   const id = useId();
   const root = useRef<HTMLDivElement>(null);
   const list = useRef<HTMLUListElement>(null);
-  const [value, setValue] = useState(defaultValue && options.includes(defaultValue) ? defaultValue : options[0]);
+  const [inner, setInner] = useState(defaultValue && options.includes(defaultValue) ? defaultValue : placeholder ? "" : options[0]);
+  const value = controlled ?? inner;
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(0);
   const [up, setUp] = useState(false);
@@ -21,12 +22,13 @@ export function Select({ name, options, defaultValue, label, className }: { name
   const show = () => {
     // open upward when there is not enough room below
     const r = root.current?.getBoundingClientRect();
-    setUp(!!r && window.innerHeight - r.bottom < 280 && r.top > 280);
+    setUp(!!r && window.innerHeight - r.bottom < 340 && r.top > window.innerHeight - r.bottom);
     setActive(Math.max(0, options.indexOf(value)));
     setOpen(true);
   };
   const choose = (o: string) => {
-    setValue(o);
+    setInner(o);
+    onChange?.(o);
     setOpen(false);
   };
 
@@ -92,7 +94,7 @@ export function Select({ name, options, defaultValue, label, className }: { name
           open ? "border-primary" : "border-border hover:border-foreground/30 focus-visible:border-primary",
         )}
       >
-        <span className="truncate">{value}</span>
+        <span className={cn("truncate", !value && "text-muted-foreground")}>{value || placeholder}</span>
         <ChevronDown size={16} className={cn("shrink-0 text-muted-foreground transition-transform duration-200", open && "rotate-180")} />
       </button>
       {open && (
@@ -102,7 +104,7 @@ export function Select({ name, options, defaultValue, label, className }: { name
           role="listbox"
           aria-label={label}
           className={cn(
-            "absolute left-0 right-0 z-30 max-h-60 overflow-y-auto rounded-xl border border-border bg-card p-1.5 shadow-2xl",
+            "absolute left-0 right-0 z-30 rounded-xl border border-border bg-card p-1.5 shadow-2xl",
             up ? "bottom-full mb-2" : "top-full mt-2",
           )}
         >

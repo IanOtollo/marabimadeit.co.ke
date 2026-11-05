@@ -305,7 +305,7 @@ export const privacy: LegalDoc = {
         head: ["Category", "Examples", "Where it comes from"],
         rows: [
           ["Identity and contact", "Name, email address, telephone number, organisation, job title", "You, when you write to us, speak with us or sign an agreement"],
-          ["Project and enquiry details", "What you want built, timelines, links to existing sites, and the brief you prepare with the Marabi assistant if you send it to us", "You"],
+          ["Project and enquiry details", "What you want built, an optional budget range, timelines, links to existing sites, and the project brief you complete on our Start a project page", "You"],
           ["Contract and billing", "Billing name and address, invoices, payment references (M-Pesa transaction codes, bank transfer references), tax details you give us for invoicing", "You, and your bank or payment provider when you pay us"],
           ["Communications", "Emails, call notes, meeting recordings only with your agreement, and project messages", "You and us"],
           ["Technical and security", "IP address, browser and device type, pages requested, date and time, referring page, and error records", "Your browser, automatically, recorded in server logs"],
@@ -546,7 +546,10 @@ export const cookies: LegalDoc = {
         head: ["Name", "Type", "What it does", "Category", "Duration", "Set by"],
         rows: [
           ["mmi-consent", "Local storage", "Records whether you chose Allow or No thanks on the cookie banner, so we do not ask on every page", "Strictly necessary", "Until you clear your browser data", "Us (first party)"],
-          ["mmi-bot", "Local storage", "Remembers the state of the Marabi assistant (for example whether it is asleep or awake and which prompts you dismissed) and any draft project brief you create, so you can continue where you stopped", "Functional, used only to provide the assistant you choose to use", "Until you clear your browser data", "Us (first party)"],
+          ["mmi-bot", "Local storage", "Remembers the state of the Marabi assistant (for example whether it is asleep or awake, or that you chose to hide it), so it behaves the way you left it", "Functional, used only to provide the assistant you choose to use", "Until you clear your browser data", "Us (first party)"],
+          ["mmi-brief", "Local storage", "Saves the draft of your project brief while you fill it in, so you can come back to it. It is deleted when you send the brief or choose Start fresh", "Functional, used only to provide the form you choose to use", "Until you send the brief, start fresh, or clear your browser data", "Us (first party)"],
+          ["mmi-launch", "Local storage", "Records that you have seen the opening animation, so it does not play again for two weeks", "Functional", "14 days", "Us (first party)"],
+          ["mmi-bot-hello, mmi-bot-form-hello, mmi-dwell", "Session storage", "Remember that the assistant has already greeted you or explained a topic during this visit, so it does not repeat itself", "Functional", "Until you close the tab", "Us (first party)"],
         ],
       },
       note: "Nothing in this table is sent to us. It stays in your browser on your device. If you clear your browser data for this site, both items are deleted.",

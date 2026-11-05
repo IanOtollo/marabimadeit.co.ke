@@ -20,11 +20,11 @@ export const site = {
   short: "Marabi",
   tagline: "MarabiMadeIt.", // single source: hero, footer, loader, card backs, structured data
   domain: "marabimadeit.co.ke",
-  email: "hello@marabimadeit.co.ke",
+  email: "marabimadeit@gmail.com",
   phone: "+254 758 333996", // the main site line (footer, contact page): Aineah's number
   whatsapp: "254758333996", // digits only, international format, no plus. The assistant sends briefs here.
-  /** Where emailed enquiries go. Both founders, so nothing is lost if the hello@ mailbox is not set up yet. */
-  enquiryTo: "aineahbwire@gmail.com,ianotollo@gmail.com",
+  /** Where emailed enquiries go. The studio inbox. */
+  enquiryTo: "marabimadeit@gmail.com",
   location: "Nairobi, Kenya",
   timezone: "Africa/Nairobi",
   legalEntity: "Marabi Made It",

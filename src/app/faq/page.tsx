@@ -15,7 +15,7 @@ const general: FaqGroup = {
   id: "general",
   label: "Working with us",
   items: [
-    { q: "How do I start?", a: "Tap Start a project and answer five quick questions, or write to us directly. You get a reply within one business day, then a free discovery call and a written proposal with a fixed quote." },
+    { q: "How do I start?", a: "Tap Start a project and complete the short project brief, or write to us directly. You get a quick personal reply from Aineah or Ian, then a discovery call and a written proposal with a quote." },
     { q: "Where are you based, and who do you work with?", a: `We are based in ${site.location} and work with clients across Kenya and beyond, by call, WhatsApp, email or in person.` },
     { q: "Who will actually build my project?", a: "The two principals: Aineah Marabi, Founder and Lead Software Developer, and Ian Otollo, Co-Founder and Developer. We take on a limited number of projects so you are never handed to a stranger." },
     { q: "Do you sign NDAs?", a: "Yes, before you share anything sensitive. Confidentiality is also covered in our Terms of Service." },
@@ -46,7 +46,7 @@ export default function FaqPage() {
         </div>
         <Reveal className="mt-16 rounded-2xl border border-border/50 bg-card p-8 text-center sm:p-14">
           <h2 className="text-3xl sm:text-4xl">Did not find yours?</h2>
-          <p className="mx-auto mt-4 max-w-md text-muted-foreground">Ask us directly. A real person replies within one business day.</p>
+          <p className="mx-auto mt-4 max-w-md text-muted-foreground">Ask us directly. A real person replies, and fast.</p>
           <CtaButton className="mt-6">Ask us</CtaButton>
         </Reveal>
       </Section>

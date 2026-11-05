@@ -86,7 +86,7 @@ export default function ProcessPage() {
       <Section>
         <Reveal className="rounded-2xl border border-border/50 bg-card p-8 text-center sm:p-16">
           <h2 className="text-4xl sm:text-5xl">Ready to begin stage one?</h2>
-          <p className="mx-auto mt-6 max-w-xl text-lg text-muted-foreground">Discovery is a free call. You leave with clarity, whether or not we end up working together.</p>
+          <p className="mx-auto mt-6 max-w-xl text-lg text-muted-foreground">Discovery is a short call. You leave with clarity, whether or not we end up working together.</p>
           <CtaButton className="mt-8 px-8 py-4">Start a project</CtaButton>
         </Reveal>
       </Section>

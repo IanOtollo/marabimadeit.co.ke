@@ -11,6 +11,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/portfolio",
     "/about",
     "/faq",
+    "/start",
     "/contact",
     "/terms",
     "/privacy",
