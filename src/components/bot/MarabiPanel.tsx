@@ -52,15 +52,15 @@ function Starter() {
   );
 
   const send = (via: "wa" | "mail") => {
-    if (!brief.name?.trim() || !brief.contact?.trim()) {
-      setErr("Add your name and a phone number or email so we can reply.");
+    if (!brief.name?.trim() || (brief.contact || "").replace(/\D/g, "").length < 9) {
+      setErr("Add your name and a phone or WhatsApp number (at least 9 digits) so we can reply.");
       return;
     }
     setErr("");
     m.remember({ name: brief.name.trim().split(" ")[0] });
     setSent(via);
     if (via === "wa") window.open(`https://wa.me/${site.whatsapp}?text=${encodeURIComponent(message)}`, "_blank", "noopener,noreferrer");
-    else window.location.href = `mailto:${site.email}?subject=${encodeURIComponent(`Project enquiry: ${doorLabel}`)}&body=${encodeURIComponent(message)}`;
+    else window.location.href = `mailto:${site.enquiryTo}?subject=${encodeURIComponent(`Project enquiry: ${doorLabel}`)}&body=${encodeURIComponent(message)}`;
     m.setMood("happy", 2500);
   };
 
@@ -152,7 +152,7 @@ function Starter() {
               <Q title="Last step: how do we reach you?" sub="Then I package everything for you." />
               <div className="space-y-3">
                 <input value={brief.name ?? ""} onChange={(e) => set({ name: e.target.value }, false)} placeholder="Your name" aria-label="Your name" autoComplete="name" className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:border-primary" />
-                <input value={brief.contact ?? ""} onChange={(e) => set({ contact: e.target.value }, false)} placeholder="Phone / WhatsApp or email" aria-label="Phone, WhatsApp or email" autoComplete="tel" className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:border-primary" />
+                <input value={brief.contact ?? ""} onChange={(e) => set({ contact: e.target.value }, false)} placeholder="Phone / WhatsApp number" aria-label="Phone or WhatsApp number" inputMode="tel" required autoComplete="tel" className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:border-primary" />
                 <textarea value={brief.note ?? ""} onChange={(e) => set({ note: e.target.value }, false)} rows={2} placeholder="Anything we should know? (optional)" aria-label="Notes" className="w-full resize-none rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:border-primary" />
                 {err && <p className="text-xs text-danger" role="alert">{err}</p>}
                 <div className="grid gap-2 sm:grid-cols-2">

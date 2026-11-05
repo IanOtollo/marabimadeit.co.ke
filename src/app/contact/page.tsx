@@ -27,8 +27,8 @@ export default function ContactPage() {
       <div className="mt-16 grid gap-12 lg:grid-cols-[1fr_1.2fr]">
         <Reveal>
           <ul className="space-y-6">
-            <li className="flex gap-4"><Mail className="mt-1 text-primary" size={20} /><div><p className="text-sm text-muted-foreground">Email</p><p className="text-lg">{site.email}</p></div></li>
-            <li className="flex gap-4"><Phone className="mt-1 text-primary" size={20} /><div><p className="text-sm text-muted-foreground">Phone</p><p className="text-lg">{site.phone}</p></div></li>
+            <li className="flex gap-4"><Mail className="mt-1 text-primary" size={20} /><div><p className="text-sm text-muted-foreground">Email</p><a data-marabi-action="email" href={`mailto:${site.email}`} className="text-lg underline-offset-4 transition-colors hover:text-primary hover:underline" aria-label={`Email ${site.email}`}>{site.email}</a></div></li>
+            <li className="flex gap-4"><Phone className="mt-1 text-primary" size={20} /><div><p className="text-sm text-muted-foreground">Phone</p><a data-marabi-action="call" href={`tel:${site.phone.replace(/\s/g, "")}`} className="text-lg underline-offset-4 transition-colors hover:text-primary hover:underline" aria-label={`Call ${site.phone}`}>{site.phone}</a></div></li>
             <li className="flex gap-4"><MapPin className="mt-1 text-primary" size={20} /><div><p className="text-sm text-muted-foreground">Studio</p><p className="text-lg">{site.location}</p></div></li>
             <li className="flex gap-4"><Clock className="mt-1 text-primary" size={20} /><div><p className="text-sm text-muted-foreground">Local time</p><LocalClock className="text-lg" /></div></li>
           </ul>

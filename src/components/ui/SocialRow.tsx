@@ -1,4 +1,4 @@
-import { Instagram, Mail, Phone } from "lucide-react";
+import { Mail, Phone } from "lucide-react";
 import type { Founder } from "@/data/site";
 import { cn } from "@/lib/utils";
 
@@ -13,10 +13,9 @@ function WhatsApp({ size = 18 }: { size?: number }) {
 export function SocialRow({ person, className }: { person: Founder; className?: string }) {
   const c = person.contact;
   const items = [
-    { label: `WhatsApp ${person.first}`, href: `https://wa.me/${c.whatsapp}`, icon: <WhatsApp />, ext: true },
-    { label: `${person.first} on Instagram`, href: `https://instagram.com/${c.instagram}`, icon: <Instagram size={18} />, ext: true },
-    { label: `Email ${person.first}`, href: `mailto:${c.email}`, icon: <Mail size={18} />, ext: false },
-    { label: `Call ${person.first} on ${c.phone}`, href: `tel:${c.phone.replace(/\s/g, "")}`, icon: <Phone size={18} />, ext: false },
+    { label: `WhatsApp ${person.first}`, href: `https://wa.me/${c.whatsapp}`, icon: <WhatsApp />, ext: true, action: "whatsapp" },
+    { label: `Email ${person.first}`, href: `mailto:${c.email}`, icon: <Mail size={18} />, ext: false, action: "email" },
+    { label: `Call ${person.first} on ${c.phone}`, href: `tel:${c.phone.replace(/\s/g, "")}`, icon: <Phone size={18} />, ext: false, action: "call" },
   ];
   const hover = person.accent === "primary" ? "hover:border-primary hover:text-primary" : "hover:border-secondary hover:text-secondary";
   return (
@@ -25,6 +24,7 @@ export function SocialRow({ person, className }: { person: Founder; className?: 
         <li key={i.label}>
           <a
             href={i.href}
+            data-marabi-action={i.action}
             aria-label={i.label}
             title={i.label}
             {...(i.ext ? { target: "_blank", rel: "noopener noreferrer" } : {})}

@@ -79,8 +79,12 @@ export function Footer() {
           </div>
           <div>
             <h3 className={h}>Contact</h3>
-            <p>{site.email}</p>
-            <p className="mt-1 text-muted-foreground">{site.phone}</p>
+            <p>
+              <a data-marabi-action="email" href={`mailto:${site.email}`} className="transition-colors hover:text-primary" aria-label={`Email ${site.email}`}>
+                {site.email}
+              </a>
+            </p>
+            <p className="mt-1"><a data-marabi-action="call" href={`tel:${site.phone.replace(/\s/g, "")}`} className="text-muted-foreground transition-colors hover:text-primary" aria-label={`Call ${site.phone}`}>{site.phone}</a></p>
             <p className="text-muted-foreground">{site.location}</p>
           </div>
           <div>

@@ -35,7 +35,7 @@ export function Partners() {
           <h2 className="max-w-3xl text-4xl sm:text-5xl">Partners and clients.</h2>
           <MarabiHint topic="partners" label="Ask Marabi about our partners" />
         </div>
-        <p className="mt-6 max-w-xl text-lg text-muted-foreground">Brands we have built with, shown as silhouettes.</p>
+        <p className="mt-6 max-w-xl text-lg text-muted-foreground">Brands we have built with.</p>
       </Reveal>
 
       <ul className="sr-only">

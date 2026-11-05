@@ -184,9 +184,9 @@ export const topics: Topic[] = [
     id: "partners",
     title: "Partners and clients",
     keywords: ["partner", "partners", "ika360", "ika", "who trusts you", "clients"],
-    short: "Brands we have built with, shown as silhouettes.",
+    short: "The brands we have worked with, from clients we built for to technology we build on.",
     answer:
-      "Every mark on the wall is a traced silhouette of the real logo, and each belongs to a brand we have worked with: clients we built for, and technology we build on, like Zoho. Want a reference for something similar to your project? Ask, and we will connect you with a past client.",
+      "Every logo on the wall belongs to a brand we have worked with: clients we built for, and technology we build on, like Zoho. Want a reference for something similar to your project? Ask, and we will connect you with a past client.",
     follow: ["work", "start", "team"],
   },
   {

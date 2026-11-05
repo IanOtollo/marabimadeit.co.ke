@@ -2,13 +2,61 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { X } from "lucide-react";
+import { Mail, Phone, X } from "lucide-react";
 import { ease } from "@/lib/utils";
 import { OrbBody } from "./OrbBody";
-import { useMarabi } from "./MarabiProvider";
+import { useMarabi, type Reaction } from "./MarabiProvider";
 
 const S = 56;
 const PANEL_W = 384;
+
+/** A small animation that matches what the visitor is hovering: chat typing for WhatsApp, a ringing phone for calls, a floating envelope for email. */
+function ReactionBadge({ kind }: { kind: Reaction["kind"] }) {
+  return (
+    <motion.span
+      initial={{ opacity: 0, scale: 0.4, y: 6 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.4 }}
+      transition={{ duration: 0.25, ease }}
+      className="pointer-events-none absolute -right-4 -top-5 flex h-9 w-9 items-center justify-center rounded-full border border-border bg-card/95 shadow-lg backdrop-blur"
+      aria-hidden
+    >
+      {kind === "whatsapp" && (
+        <svg viewBox="0 0 24 24" className="h-5 w-5 text-secondary">
+          <path d="M4 5h16v11H9l-5 4z" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+          {[8, 12, 16].map((x, i) => (
+            <motion.circle key={x} cx={x} cy="10.5" r="1.3" fill="currentColor" animate={{ y: [0, -2.2, 0], opacity: [0.45, 1, 0.45] }} transition={{ duration: 0.9, repeat: Infinity, delay: i * 0.15 }} />
+          ))}
+        </svg>
+      )}
+      {kind === "call" && (
+        <>
+          {[0, 0.45].map((d) => (
+            <motion.span key={d} className="absolute inset-0 rounded-full border border-primary" animate={{ scale: [1, 1.9], opacity: [0.7, 0] }} transition={{ duration: 1.1, repeat: Infinity, delay: d }} />
+          ))}
+          <motion.span animate={{ rotate: [0, -18, 18, -18, 18, 0] }} transition={{ duration: 0.7, repeat: Infinity, repeatDelay: 0.35 }}>
+            <Phone size={18} className="text-primary" />
+          </motion.span>
+        </>
+      )}
+      {kind === "email" && (
+        <>
+          {[0, 1, 2].map((i) => (
+            <motion.span key={i} className="absolute left-1 top-1/2 h-1 w-1 rounded-full bg-primary" animate={{ x: [-2, 6], opacity: [0, 0.9, 0] }} transition={{ duration: 1.1, repeat: Infinity, delay: i * 0.2 }} />
+          ))}
+          <motion.span animate={{ y: [0, -3, 0] }} transition={{ duration: 1.2, repeat: Infinity }}>
+            <Mail size={18} className="text-primary" />
+          </motion.span>
+        </>
+      )}
+      {kind === "cta" && (
+        <motion.svg viewBox="0 0 10 10" className="h-4 w-4 text-primary" animate={{ scale: [1, 1.35, 1], rotate: [0, 45, 0] }} transition={{ duration: 1.2, repeat: Infinity }}>
+          <path d="M5 0 L6 4 L10 5 L6 6 L5 10 L4 6 L0 5 L4 4 Z" fill="currentColor" />
+        </motion.svg>
+      )}
+    </motion.span>
+  );
+}
 
 export function Orb() {
   const m = useMarabi();
@@ -16,8 +64,7 @@ export function Orb() {
   ctx.current = m;
   const root = useRef<HTMLDivElement>(null);
   const btn = useRef<HTMLButtonElement>(null);
-  const [side, setSide] = useState<"left" | "right">("left");
-  const sideRef = useRef(side);
+  const bubbleRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const el = root.current!;
@@ -124,10 +171,32 @@ export function Orb() {
       const mag = Math.min(2.6, len / 40);
       btn.current?.style.setProperty("--px", `${(lx / len) * mag}px`);
       btn.current?.style.setProperty("--py", `${(ly / len) * mag}px`);
-      const s: "left" | "right" = pos.x > window.innerWidth / 2 ? "left" : "right";
-      if (s !== sideRef.current) {
-        sideRef.current = s;
-        setSide(s);
+      // Keep the info bubble fully on screen, clear of the nav bar, beside the orb on whichever side has room.
+      const b = bubbleRef.current;
+      if (b) {
+        const W = window.innerWidth;
+        const H = window.innerHeight;
+        const bw = b.offsetWidth;
+        const bh = b.offsetHeight;
+        const gap = 14;
+        const topMin = 76;
+        let left: number;
+        let top: number;
+        if (pos.x - gap - bw >= 8) {
+          left = pos.x - gap - bw;
+          top = pos.y + S / 2 - bh / 2;
+        } else if (pos.x + S + gap + bw <= W - 8) {
+          left = pos.x + S + gap;
+          top = pos.y + S / 2 - bh / 2;
+        } else {
+          // no room at the side (small phones): sit above the orb, or below it when there is no room above
+          left = pos.x + S / 2 - bw / 2;
+          top = pos.y - bh - gap >= topMin ? pos.y - bh - gap : pos.y + S + gap;
+        }
+        left = clamp(left, 8, Math.max(8, W - bw - 8));
+        top = clamp(top, topMin, Math.max(topMin, H - bh - 8));
+        b.style.left = `${left - pos.x}px`;
+        b.style.top = `${top - pos.y}px`;
       }
     };
     raf = requestAnimationFrame(tick);
@@ -149,26 +218,28 @@ export function Orb() {
           onClick={() => (m.panel === "closed" ? m.openChat() : m.close())}
           aria-label="Open Marabi 2.0, the studio assistant"
           tabIndex={visible ? 0 : -1}
-          className={`block rounded-full outline-none focus-visible:ring-2 focus-visible:ring-primary ${m.mood === "happy" ? "animate-bounce" : m.mood === "mad" ? "animate-[wiggle_0.3s_ease-in-out_4]" : ""}`}
+          className={`block rounded-full outline-none focus-visible:ring-2 focus-visible:ring-primary ${m.reaction?.kind === "call" ? "animate-[wiggle_0.35s_ease-in-out_infinite]" : m.mood === "happy" ? "animate-bounce" : m.mood === "mad" ? "animate-[wiggle_0.3s_ease-in-out_4]" : ""}`}
         >
           <OrbBody mood={m.mood} size={S} />
         </button>
       </motion.div>
 
+      <AnimatePresence>{visible && m.reaction && <ReactionBadge key={m.reaction.id} kind={m.reaction.kind} />}</AnimatePresence>
+
       <AnimatePresence>
         {bubble && visible && m.panel === "closed" && (
           <motion.div
             key={bubble.id}
+            ref={bubbleRef}
             role="status"
             initial={{ opacity: 0, scale: 0.9, y: 6 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95 }}
             transition={{ duration: 0.3, ease }}
-            className={`pointer-events-auto absolute top-1/2 ${bubble.bullets ? "w-72 sm:w-80" : "w-64"} -translate-y-1/2 rounded-2xl border border-border bg-card/95 p-4 text-sm shadow-xl backdrop-blur-md ${
-              side === "left" ? "right-full mr-4" : "left-full ml-4"
-            }`}
+            // The bubble itself lets clicks pass straight through to the page; only its own buttons are clickable.
+            className={`pointer-events-none absolute left-0 top-0 ${bubble.bullets ? "w-[min(20rem,calc(100vw-1rem))]" : "w-[min(16rem,calc(100vw-1rem))]"} rounded-2xl border border-border bg-card/95 p-4 text-sm shadow-xl backdrop-blur-md`}
           >
-            <button onClick={m.dismissBubble} aria-label="Dismiss" className="absolute right-2 top-2 rounded-lg p-1 text-muted-foreground hover:bg-muted hover:text-foreground">
+            <button onClick={m.dismissBubble} aria-label="Dismiss" className="pointer-events-auto absolute right-2 top-2 rounded-lg p-1 text-muted-foreground hover:bg-muted hover:text-foreground">
               <X size={14} />
             </button>
             <p className="pr-5 leading-snug">{bubble.text}</p>
@@ -191,7 +262,7 @@ export function Orb() {
                       m.dismissBubble();
                       a.run();
                     }}
-                    className={`rounded-lg px-3 py-1.5 text-xs font-medium transition active:scale-[0.97] ${
+                    className={`pointer-events-auto rounded-lg px-3 py-1.5 text-xs font-medium transition active:scale-[0.97] ${
                       i === 0 ? "bg-primary text-primary-foreground hover:opacity-90" : "border border-border hover:bg-muted"
                     }`}
                   >

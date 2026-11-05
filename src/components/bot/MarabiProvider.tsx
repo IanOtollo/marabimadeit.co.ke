@@ -6,6 +6,7 @@ import { byId, details, topics, type Topic } from "@/data/botKnowledge";
 
 export type Mood = "idle" | "happy" | "mad" | "sleepy" | "excited" | "talking";
 export type PanelMode = "closed" | "chat" | "start";
+export type Reaction = { kind: "whatsapp" | "call" | "email" | "cta"; id: number };
 export type Preset = { door?: string; note?: string };
 export type Bubble = { id: number; text: string; topic?: string; bullets?: string[]; actions?: { label: string; run: () => void }[] };
 
@@ -23,6 +24,7 @@ type Ctx = {
   spark: { el: HTMLElement; id: number } | null;
   preset: Preset | null;
   ask: { topic: string; id: number } | null;
+  reaction: Reaction | null;
   askTopic: (topic: string) => void;
   name?: string;
   dock: HTMLElement | null;
@@ -68,15 +70,21 @@ export function MarabiProvider({ children, onFullForm }: { children: React.React
   const [spark, setSpark] = useState<Ctx["spark"]>(null);
   const [preset, setPreset] = useState<Preset | null>(null);
   const [ask, setAsk] = useState<{ topic: string; id: number } | null>(null);
+  const [reaction, setReaction] = useState<Reaction | null>(null);
   const router = useRouter();
   const [dock, setDock] = useState<HTMLElement | null>(null);
   const [memory, setMemory] = useState<Memory>({});
   const seq = useRef(0);
+  const bubbleAt = useRef(0);
+  /** The cookie notice sits at the bottom of the screen; Marabi never talks over it. */
+  const cookieOpen = () => !!document.querySelector('[role="dialog"][aria-label="Cookie consent"]');
   const moodTimer = useRef<ReturnType<typeof setTimeout>>();
   const bubbleTimer = useRef<ReturnType<typeof setTimeout>>();
   const lastActive = useRef(Date.now());
   const panelRef = useRef(panel);
   panelRef.current = panel;
+  const live = useRef({ asleep, hidden, bubble });
+  live.current = { asleep, hidden, bubble };
 
   useEffect(() => {
     setMemory(read());
@@ -108,6 +116,7 @@ export function MarabiProvider({ children, onFullForm }: { children: React.React
 
   const say = useCallback((b: Omit<Bubble, "id">, ms = 9000) => {
     clearTimeout(bubbleTimer.current);
+    bubbleAt.current = Date.now();
     setBubble({ ...b, id: ++seq.current });
     if (ms > 0) bubbleTimer.current = setTimeout(() => setBubble(null), ms);
   }, []);
@@ -244,11 +253,143 @@ export function MarabiProvider({ children, onFullForm }: { children: React.React
     };
   }, []);
 
-  // gentle, limited attention-pulls: first a hello, then at most three nudges toward the CTA
+  // dwell: rest the mouse on an area marked data-marabi-info for 8 seconds and Marabi explains it, once per topic per visit
+  useEffect(() => {
+    const DWELL = 8000;
+    const COOLDOWN = 25000;
+    const KEY_SEEN = "mmi-dwell";
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    let anchor: HTMLElement | null = null;
+    let at = { x: 0, y: 0 };
+    let lastFire = 0;
+    let seen: string[] = [];
+    try {
+      seen = JSON.parse(sessionStorage.getItem(KEY_SEEN) || "[]");
+    } catch {}
+
+    const infoAt = (x: number, y: number) => {
+      const t = document.elementFromPoint(x, y) as HTMLElement | null;
+      if (!t) return null;
+      // never fire over controls, navigation, the assistant itself or the launch screen
+      if (t.closest("button, a, input, textarea, select, summary, label, nav, [role=dialog], [role=slider], #launch, [data-no-dwell]")) return null;
+      return t.closest("[data-marabi-info]") as HTMLElement | null;
+    };
+    const fire = () => {
+      const el = infoAt(at.x, at.y);
+      if (!el || el !== anchor) return;
+      const topic = el.dataset.marabiInfo || "overview";
+      const l = live.current;
+      if (document.hidden || cookieOpen() || panelRef.current !== "closed" || l.asleep || l.hidden || l.bubble) return;
+      if (Date.now() - lastFire < COOLDOWN || seen.includes(topic)) return;
+      seen = [...seen, topic];
+      try {
+        sessionStorage.setItem(KEY_SEEN, JSON.stringify(seen));
+      } catch {}
+      lastFire = Date.now();
+      // info only: the bubble appears beside the assistant, which does not fly to the section or touch anything
+      explainRef.current(topic, null);
+    };
+    const arm = () => {
+      clearTimeout(timer);
+      anchor = infoAt(at.x, at.y);
+      if (anchor) timer = setTimeout(fire, DWELL);
+    };
+    const onMove = (e: PointerEvent) => {
+      if (e.pointerType !== "mouse") return;
+      at = { x: e.clientX, y: e.clientY };
+      // small movements inside the same area keep the clock running; entering a different area restarts it
+      if (infoAt(at.x, at.y) !== anchor) arm();
+    };
+    const stop = () => {
+      clearTimeout(timer);
+      anchor = null;
+    };
+    window.addEventListener("pointermove", onMove, { passive: true });
+    window.addEventListener("scroll", arm, { passive: true });
+    document.addEventListener("mouseleave", stop);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("scroll", arm);
+      document.removeEventListener("mouseleave", stop);
+    };
+  }, []);
+
+  // Hover reactions and a gentle nudge. Hovering a contact button makes Marabi play a matching animation;
+  // resting on a button for a few seconds makes it say what the click will do. It never clicks anything itself.
+  useEffect(() => {
+    const NUDGE = 5000;
+    const COOLDOWN = 15000;
+    const copy: Record<string, string> = {
+      whatsapp: "Go on, click it. It opens WhatsApp with a chat ready to start.",
+      call: "Tap it to call. It opens your phone's dialer with the number filled in.",
+      email: "Click it to write to us. It opens your email app with our address ready.",
+      cta: "Ready when you are. Click it and I will package your brief in a few taps.",
+    };
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    let target: HTMLElement | null = null;
+    let lastFire = 0;
+    const seen = new Set<string>();
+    const kindOf = (el: HTMLElement): Reaction["kind"] => {
+      const a = el.dataset.marabiAction;
+      return a === "whatsapp" || a === "call" || a === "email" ? a : "cta";
+    };
+    const pick = (t: EventTarget | null) => (t as HTMLElement | null)?.closest?.("[data-marabi-action], [data-marabi-cta]") as HTMLElement | null;
+    const onOver = (e: PointerEvent) => {
+      if (e.pointerType !== "mouse") return;
+      const el = pick(e.target);
+      if (el === target) return;
+      clearTimeout(timer);
+      target = el;
+      if (!el) {
+        setReaction(null);
+        return;
+      }
+      const kind = kindOf(el);
+      if (!live.current.asleep && !live.current.hidden) {
+        setReaction({ kind, id: ++seq.current });
+        if (kind === "call") setMood("excited", 2200);
+        else setMood("happy", 2200);
+      }
+      timer = setTimeout(() => {
+        const l = live.current;
+        if (target !== el || document.hidden || cookieOpen() || panelRef.current !== "closed" || l.asleep || l.hidden || l.bubble) return;
+        if (Date.now() - lastFire < COOLDOWN || seen.has(kind)) return;
+        seen.add(kind);
+        lastFire = Date.now();
+        say({ text: copy[kind] }, 7000);
+        setMood("excited", 1800);
+      }, NUDGE);
+    };
+    const onLeave = () => {
+      clearTimeout(timer);
+      target = null;
+      setReaction(null);
+    };
+    window.addEventListener("pointerover", onOver, { passive: true });
+    document.addEventListener("mouseleave", onLeave);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("pointerover", onOver);
+      document.removeEventListener("mouseleave", onLeave);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // an info bubble never lingers over content the visitor has scrolled on to
+  useEffect(() => {
+    const onScroll = () => {
+      if (live.current.bubble && Date.now() - bubbleAt.current > 1500) setBubble(null);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // one gentle hello per visit
   useEffect(() => {
     if (hidden || asleep) return;
     const hello = setTimeout(() => {
-      if (panelRef.current !== "closed") return;
+      if (panelRef.current !== "closed" || cookieOpen()) return;
       let seen = false;
       try {
         seen = sessionStorage.getItem("mmi-bot-hello") === "1";
@@ -267,34 +408,19 @@ export function MarabiProvider({ children, onFullForm }: { children: React.React
       );
       setMood("happy", 1600);
     }, 9000);
-    let count = 0;
-    const nudge = setInterval(() => {
-      if (panelRef.current !== "closed" || count >= 1 || document.hidden) return;
-      const cands = Array.from(document.querySelectorAll<HTMLElement>("[data-marabi-cta]"));
-      const el = cands.find((e) => {
-        const r = e.getBoundingClientRect();
-        return r.width > 0 && r.top >= 0 && r.bottom <= window.innerHeight;
-      });
-      if (!el) return;
-      count++;
-      pointTo(el);
-      say({ text: "Psst. Starting is easier than it looks: a few taps and I'll package the brief.", actions: [{ label: "Show me", run: () => openStart() }] }, 6000);
-    }, 75000);
-    return () => {
-      clearTimeout(hello);
-      clearInterval(nudge);
-    };
+    // No autonomous actions: Marabi never flies to, highlights or presses anything on the page by itself.
+    return () => clearTimeout(hello);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hidden, asleep]);
 
   const value = useMemo<Ctx>(
     () => ({
-      panel, asleep, hidden, mood, bubble, goto, spark, preset, ask, askTopic, name: memory.name, dock, memory,
+      panel, asleep, hidden, mood, bubble, goto, spark, preset, ask, reaction, askTopic, name: memory.name, dock, memory,
       registerDock: setDock,
       openChat, openStart, openFullForm: () => { setPanel("closed"); onFullForm(); },
       close, wake, sleep, hide, setMood, say, dismissBubble, explain, pointTo, remember,
     }),
-    [panel, asleep, hidden, mood, bubble, goto, spark, preset, ask, askTopic, memory, dock, openChat, openStart, close, wake, sleep, hide, setMood, say, dismissBubble, explain, pointTo, remember, onFullForm],
+    [panel, asleep, hidden, mood, bubble, goto, spark, preset, ask, reaction, askTopic, memory, dock, openChat, openStart, close, wake, sleep, hide, setMood, say, dismissBubble, explain, pointTo, remember, onFullForm],
   );
 
   return <C.Provider value={value}>{children}</C.Provider>;

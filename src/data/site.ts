@@ -12,7 +12,7 @@ export type Founder = {
   signature: string;
   order: number; // Founder first
   /** Personal contact points shown under each avatar. Update the numbers/handles here. */
-  contact: { whatsapp: string; phone: string; email: string; instagram: string };
+  contact: { whatsapp: string; phone: string; email: string };
 };
 
 export const site = {
@@ -21,9 +21,10 @@ export const site = {
   tagline: "MarabiMadeIt.", // single source: hero, footer, loader, card backs, structured data
   domain: "marabimadeit.co.ke",
   email: "hello@marabimadeit.co.ke",
-  phone: "+254 700 000 000",
-  whatsapp: "254700000000", // digits only, international format, no plus
-  instagram: "marabimadeit",
+  phone: "+254 758 333996", // the main site line (footer, contact page): Aineah's number
+  whatsapp: "254758333996", // digits only, international format, no plus. The assistant sends briefs here.
+  /** Where emailed enquiries go. Both founders, so nothing is lost if the hello@ mailbox is not set up yet. */
+  enquiryTo: "aineahbwire@gmail.com,ianotollo@gmail.com",
   location: "Nairobi, Kenya",
   timezone: "Africa/Nairobi",
   legalEntity: "Marabi Made It",
@@ -34,7 +35,7 @@ const foundersRaw: Founder[] = [
   {
     slug: "ian",
     order: 2,
-    contact: { whatsapp: "254700000000", phone: "+254 700 000 000", email: "hello@marabimadeit.co.ke", instagram: "ianotollo" },
+    contact: { whatsapp: "254700399641", phone: "+254 112 993859", email: "ianotollo@gmail.com" },
     name: "Ian Otollo",
     first: "Ian",
     role: "Co-Founder · Developer",
@@ -53,7 +54,7 @@ const foundersRaw: Founder[] = [
   {
     slug: "aineah",
     order: 1,
-    contact: { whatsapp: "254700000000", phone: "+254 700 000 000", email: "hello@marabimadeit.co.ke", instagram: "aineahmarabi" },
+    contact: { whatsapp: "254758333996", phone: "+254 758 333996", email: "aineahbwire@gmail.com" },
     name: "Aineah Marabi",
     first: "Aineah",
     role: "Founder · Lead Software Developer",

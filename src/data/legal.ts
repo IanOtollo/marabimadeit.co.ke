@@ -305,7 +305,7 @@ export const privacy: LegalDoc = {
         head: ["Category", "Examples", "Where it comes from"],
         rows: [
           ["Identity and contact", "Name, email address, telephone number, organisation, job title", "You, when you write to us, speak with us or sign an agreement"],
-          ["Project and enquiry details", "What you want built, budget range, timelines, links to existing sites, and the brief you prepare with the Marabi assistant if you send it to us", "You"],
+          ["Project and enquiry details", "What you want built, timelines, links to existing sites, and the brief you prepare with the Marabi assistant if you send it to us", "You"],
           ["Contract and billing", "Billing name and address, invoices, payment references (M-Pesa transaction codes, bank transfer references), tax details you give us for invoicing", "You, and your bank or payment provider when you pay us"],
           ["Communications", "Emails, call notes, meeting recordings only with your agreement, and project messages", "You and us"],
           ["Technical and security", "IP address, browser and device type, pages requested, date and time, referring page, and error records", "Your browser, automatically, recorded in server logs"],
@@ -1176,7 +1176,7 @@ export const accessibility: LegalDoc = {
   glance: [
     "We are working to meet the Web Content Accessibility Guidelines (WCAG) 2.2 at level AA.",
     "The site works with a keyboard, has a skip link, labels its forms, and respects reduced-motion settings.",
-    "The 3D cards, particle portraits and the Marabi assistant have non-motion and keyboard alternatives.",
+    "The 3D cards and the Marabi assistant have non-motion and keyboard alternatives.",
     "A few things still fall short, and we list them honestly below.",
     "Tell us if something is hard to use, and we will help and fix it.",
   ],
@@ -1193,7 +1193,7 @@ export const accessibility: LegalDoc = {
       id: "scope",
       title: "Scope",
       clauses: [
-        `This statement covers the Site at ${D}, including its pages, forms, the 3D ability cards, the interactive door panels, the hero portraits and the Marabi assistant.`,
+        `This statement covers the Site at ${D}, including its pages, forms, the 3D ability cards, the services index, the contact buttons and the Marabi assistant.`,
         "It does not cover websites and systems we build for clients, which are governed by their own requirements, or third-party sites to which we link.",
       ],
     },
@@ -1211,10 +1211,10 @@ export const accessibility: LegalDoc = {
       title: "What we have done",
       clauses: [
         "Structure and navigation: we use semantic HTML, a logical heading order, descriptive link text, landmarks, and a skip-to-content link that appears when you press Tab.",
-        "Keyboard use: all interactive elements, including menus, the door panels, the contact form, dialogs and the card controls, can be reached and operated with the keyboard, with a visible focus indicator. Dialogs close with the Escape key and return you to the page.",
+        "Keyboard use: all interactive elements, including menus, the services index, the contact form, dialogs and the card controls, can be reached and operated with the keyboard, with a visible focus indicator. Dialogs close with the Escape key and return you to the page.",
         "Colour and text: text and interface elements are designed to meet the WCAG minimum contrast ratios in the dark theme, and information is not conveyed by colour alone. Text can be resized and the layout reflows at narrow widths and on small screens without loss of content.",
         "Forms: each field has a label or accessible name, required fields are marked, and the form works with the keyboard and with screen readers.",
-        "Motion: we honour your reduced-motion setting. When it is on, the particle portraits are shown as still images, the loading sequence is skipped, the typewriter text appears at once, and smooth scrolling and decorative animation are switched off.",
+        "Motion: we honour your reduced-motion setting. When it is on, the loading sequence is skipped, the logo marquee stops, the typewriter text appears at once, and smooth scrolling and decorative animation are switched off.",
         "Images and media: informative images have text alternatives, and decorative images are hidden from assistive technology.",
       ],
     },
@@ -1223,8 +1223,7 @@ export const accessibility: LegalDoc = {
       title: "Interactive features",
       clauses: [
         "3D ability cards: the cards are drawn in a graphics canvas. They have a text description giving the person's name and role, a keyboard-operable Flip button as an alternative to dragging or tapping, and a fallback image where the browser cannot display 3D graphics. They tilt with the pointer, but movement is switched off if you prefer reduced motion.",
-        "Particle portraits: the hero portraits are decorative visualisations of the people in the photographs, and each has a text description. They are interactive with a pointer, but nothing depends on that interaction. With reduced motion on, they appear as still portraits.",
-        "Doors: each door opens on hover, on focus and on tap or click, and exposes its open or closed state to assistive technology. Each door also has a plain \"Explore\" link to its own page, which holds the full content.",
+        "Services index: each service opens and closes on hover, on focus and on tap or click, and exposes its open or closed state to assistive technology. Each service also has a plain link to its own page, so nothing depends on the open or closed state.",
         "Marabi assistant: the assistant is built to be operable by keyboard, to announce new messages to screen readers, to avoid trapping focus, and to be dismissed at any time. It limits its animation if you prefer reduced motion.",
         "Scroll-driven sections: the introductions of the founders appear one after another as you scroll. While an introduction is on screen, its name, role and tagline are available as text to assistive technology.",
       ],
@@ -1236,7 +1235,6 @@ export const accessibility: LegalDoc = {
         head: ["Area", "Limitation", "What you can do"],
         rows: [
           ["3D ability cards", "The skill bars on the card faces are part of the graphic and are not exposed one by one to screen readers. The card's description gives the person's name and role.", "Use the person's introduction text and the About page, or ask us for the card's details in text"],
-          ["Particle portraits", "The particle effect can be visually busy for some people while it forms.", "Turn on reduced motion in your operating system, and the portraits appear as still images"],
           ["Scroll-driven introductions", "The pinned, scroll-driven introductions can feel long with some assistive technologies and at high zoom levels.", "Use the skip link, the headings or the links in the navigation to move on, or ask us for the content as plain text"],
           ["Third-party content", "Linked services such as WhatsApp and Instagram have their own accessibility, which we do not control.", "Contact us by email instead"],
         ],

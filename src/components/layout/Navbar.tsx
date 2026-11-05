@@ -33,6 +33,8 @@ export function Navbar() {
           <Link href="/" className="font-display text-xl tracking-tight">
             {site.short}
           </Link>
+          {/* a clear gap and divider: the wordmark goes home, the dock beside it opens Marabi */}
+          <span className="mx-4 h-5 w-px bg-border sm:mx-6" aria-hidden />
           <BotDock />
         </div>
         <ul className="hidden items-center gap-8 text-sm text-muted-foreground lg:flex">

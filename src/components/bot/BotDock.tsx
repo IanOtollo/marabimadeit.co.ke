@@ -21,7 +21,7 @@ export function BotDock() {
       onClick={() => (resting ? m.wake() : m.openChat())}
       aria-label={resting ? "Wake Marabi 2.0, the studio assistant" : "Open Marabi 2.0, the studio assistant"}
       title={m.asleep ? "Marabi is napping. Tap to wake." : m.hidden ? "Bring Marabi back" : "Ask Marabi"}
-      className="relative ml-1.5 inline-flex h-6 w-6 items-center justify-center rounded-full outline-none focus-visible:ring-2 focus-visible:ring-primary"
+      className="relative inline-flex h-7 w-7 items-center justify-center rounded-full outline-none focus-visible:ring-2 focus-visible:ring-primary"
     >
       <span className={`absolute inset-0 rounded-full border border-dashed ${resting ? "border-border" : "border-primary/50 animate-pulse"}`} />
       <AnimatePresence>
