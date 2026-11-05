@@ -5,8 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { ArrowUpRight, Lock } from "lucide-react";
-import { doors, partners } from "@/data/site";
-import { projects, serialOf, type DoorId, type Project } from "@/data/projects";
+import { doors } from "@/data/site";
+import { projects, serialOf, zohoProjects, type DoorId, type Project } from "@/data/projects";
 import { Reveal, Section } from "@/components/ui/Reveal";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { cn, ease } from "@/lib/utils";
@@ -62,24 +62,23 @@ function BrowserFrame({ p }: { p: Project }) {
   );
 }
 
-/** A private system: the client's mark stands in for a screenshot, so nothing about the system is exposed. */
-function PrivateTile({ p }: { p: Project }) {
-  const reduce = useReducedMotion();
+/** A private system, kept compact: the client's mark, what it is, and a lock. */
+function PrivateCard({ p, i }: { p: Project; i: number }) {
   return (
-    <div className="relative flex aspect-[8/5] items-center justify-center overflow-hidden rounded-2xl border border-border/70 bg-card">
-      <div className="ruler pointer-events-none absolute inset-0 opacity-30" aria-hidden />
-      {!reduce && <motion.div className="pointer-events-none absolute inset-x-0 h-20 bg-gradient-to-b from-transparent via-primary/10 to-transparent" initial={{ top: "-25%" }} animate={{ top: "105%" }} transition={{ duration: 5, ease: "linear", repeat: Infinity }} aria-hidden />}
-      <span className="absolute left-4 top-4 inline-flex items-center gap-2 rounded-full border border-border bg-background/80 px-3 py-1.5 text-xs text-muted-foreground">
-        <Lock size={12} className="text-primary" /> Private by design
-      </span>
-      {p.logo ? (
-        <Silhouette src={p.logo.src} ratio={p.logo.ratio} h={4.5} className="relative text-foreground/80" />
-      ) : (
-        <span className="relative font-display text-7xl tracking-tighter text-foreground/80 sm:text-8xl" aria-hidden>
-          {p.monogram}
+    <motion.article initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-60px" }} transition={{ duration: 0.6, ease, delay: i * 0.08 }} className="flex flex-col rounded-2xl border border-border/60 bg-card p-6 sm:p-7">
+      <div className="flex items-center justify-between">
+        <span className="font-mono text-sm text-primary">{serialOf(p)}</span>
+        <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+          <Lock size={12} className="text-primary" /> Private
         </span>
-      )}
-    </div>
+      </div>
+      <div className="my-8 flex h-20 items-center text-foreground/80">
+        {p.logo ? <Silhouette src={p.logo.src} ratio={p.logo.ratio} h={3.2} /> : <span className="font-display text-6xl tracking-tighter">{p.monogram}</span>}
+      </div>
+      <p className="text-xs uppercase tracking-widest text-muted-foreground">{p.client}</p>
+      <h3 className="mt-1 text-xl leading-snug">{p.title}</h3>
+      <p className="mt-3 text-sm text-muted-foreground">{p.summary}</p>
+    </motion.article>
   );
 }
 
@@ -87,7 +86,7 @@ function Entry({ p, i }: { p: Project; i: number }) {
   const flip = i % 2 === 1;
   return (
     <motion.article initial={{ opacity: 0, y: 28 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-80px" }} transition={{ duration: 0.7, ease }} className="grid items-center gap-8 lg:grid-cols-[1.35fr_1fr] lg:gap-14">
-      <div className={cn(flip && "lg:order-2")}>{p.private ? <PrivateTile p={p} /> : <BrowserFrame p={p} />}</div>
+      <div className={cn(flip && "lg:order-2")}>{<BrowserFrame p={p} />}</div>
       <div>
         <p className="font-mono text-sm text-primary">
           {serialOf(p)} <span className="text-muted-foreground">· {p.year}</span>
@@ -97,7 +96,7 @@ function Entry({ p, i }: { p: Project; i: number }) {
         <p className="mt-4 text-muted-foreground">{p.summary}</p>
         {p.highlights && (
           <ul className="mt-5 space-y-2.5 text-sm">
-            {p.highlights.map((h) => (
+            {p.highlights.slice(0, 2).map((h) => (
               <li key={h} className="flex gap-3">
                 <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
                 <span>{h}</span>
@@ -106,7 +105,7 @@ function Entry({ p, i }: { p: Project; i: number }) {
           </ul>
         )}
         <ul className="mt-6 flex flex-wrap gap-2">
-          {[p.role, ...p.stack].map((s) => (
+          {p.stack.map((s) => (
             <li key={s} className="rounded-lg border border-border px-3 py-1 text-xs text-muted-foreground">
               {s}
             </li>
@@ -128,6 +127,7 @@ function CrmChapter() {
     { name: "IKA360", text: "A brand we have delivered CRM and ERP work with. Details are shared on request, so we can introduce you to the right people.", ratio: 1.41, src: "/partners/ika360.svg" },
   ];
   return (
+    <div>
     <div className="grid gap-5 md:grid-cols-2">
       {brands.map((b, i) => (
         <motion.div key={b.name} initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-60px" }} transition={{ duration: 0.6, ease, delay: i * 0.1 }} className="rounded-2xl border border-border/60 bg-card p-8 sm:p-10">
@@ -139,19 +139,31 @@ function CrmChapter() {
         </motion.div>
       ))}
     </div>
+      <Reveal>
+        <p className="mb-2 mt-14 text-sm uppercase tracking-widest text-muted-foreground">Zoho implementations</p>
+        <ul className="divide-y divide-border border-y border-border">
+          {zohoProjects.map((z) => (
+            <li key={z.client} className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 py-4">
+              <span className="text-lg sm:text-xl">{z.client}</span>
+              <span className="text-sm text-muted-foreground">{z.work}</span>
+            </li>
+          ))}
+        </ul>
+      </Reveal>
+    </div>
   );
 }
 
 export function PortfolioShowcase() {
   const [filter, setFilter] = useState<DoorId | "all">("all");
-  const count = (id: DoorId) => (id === "crm-erp" ? partners.filter((p) => ["Zoho", "IKA360"].includes(p.name)).length : projects.filter((p) => p.door === id).length);
+  const count = (id: DoorId) => (id === "crm-erp" ? zohoProjects.length : projects.filter((p) => p.door === id).length);
   const chapters = doors.filter((d) => filter === "all" || d.id === filter);
 
   return (
     <div className="border-t border-border/50">
       <div className="sticky top-16 z-20 border-b border-border/40 bg-background/85 backdrop-blur-md">
         <div className="mx-auto flex max-w-7xl gap-2 overflow-x-auto px-4 py-3 sm:px-6 lg:px-8" role="group" aria-label="Filter the portfolio by service">
-          {([["all", "All work", projects.length + 2], ...doors.map((d) => [d.id, d.title, count(d.id as DoorId)])] as [string, string, number][]).map(([id, label, n]) => (
+          {([["all", "All work", projects.length + zohoProjects.length], ...doors.map((d) => [d.id, d.title, count(d.id as DoorId)])] as [string, string, number][]).map(([id, label, n]) => (
             <button key={id} onClick={() => setFilter(id as DoorId | "all")} aria-pressed={filter === id} className={cn("shrink-0 rounded-xl border px-4 py-2 text-sm transition", filter === id ? "border-primary bg-primary text-primary-foreground" : "border-border hover:bg-muted")}>
               {label} <span className="opacity-60">{n}</span>
             </button>
@@ -175,8 +187,14 @@ export function PortfolioShowcase() {
             <div className="mt-14">
               {d.id === "crm-erp" ? (
                 <CrmChapter />
+              ) : d.id === "software" ? (
+                <div className="grid gap-5 md:grid-cols-3">
+                  {list.map((p, i) => (
+                    <PrivateCard key={p.id} p={p} i={i} />
+                  ))}
+                </div>
               ) : (
-                <div className="space-y-24 sm:space-y-32">
+                <div className="space-y-20 sm:space-y-28">
                   {list.map((p, i) => (
                     <Entry key={p.id} p={p} i={i} />
                   ))}

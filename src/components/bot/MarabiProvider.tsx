@@ -284,8 +284,8 @@ export function MarabiProvider({ children }: { children: React.ReactNode }) {
     const infoAt = (x: number, y: number) => {
       const t = document.elementFromPoint(x, y) as HTMLElement | null;
       if (!t) return null;
-      // never fire over controls, navigation, the assistant itself or the launch screen
-      if (t.closest("button, a, input, textarea, select, summary, label, nav, [role=dialog], [role=slider], #launch, [data-no-dwell]")) return null;
+      // never fire over controls, navigation, or the assistant itself
+      if (t.closest("button, a, input, textarea, select, summary, label, nav, [role=dialog], [role=slider], [data-no-dwell]")) return null;
       return t.closest("[data-marabi-info]") as HTMLElement | null;
     };
     const fire = () => {

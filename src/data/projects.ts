@@ -141,6 +141,21 @@ export const projects: Project[] = [
     order: 3,
   },
   {
+    id: "epimax-kenya",
+    slug: "epimax-kenya",
+    door: "ecommerce",
+    title: "A skincare store on Shopify",
+    client: "Epimax Kenya",
+    year: 2026,
+    summary: "An online store for a Nairobi skincare specialist. Shoppers move from body moisturisers to facial cleansers and sunscreen through bold collection tiles, with new arrivals and best sellers up front.",
+    role: "Design and development",
+    stack: ["Shopify"],
+    image: "/projects/epimaxkenya-hero.jpg",
+    url: "https://epimaxkenya.com",
+    highlights: ["Collections for body, face and sun care, plus best sellers", "Same-day delivery within Nairobi, announced on every page"],
+    order: 4,
+  },
+  {
     id: "dualpix-gms",
     slug: "dualpix-guest-management",
     door: "software",
@@ -185,6 +200,17 @@ export const projects: Project[] = [
     highlights: ["Built for the daily routine at the counter", "Private access for the shop's own staff", "Kept private to protect the business"],
     order: 3,
   },
+];
+
+/** Zoho implementations: shown as a roster of work, with the kind of implementation for each. */
+export const zohoProjects: { client: string; work: string }[] = [
+  { client: "Zulal Properties", work: "Zoho One implementation" },
+  { client: "Azure Riverside", work: "Zoho One implementation" },
+  { client: "Azura Residences", work: "Zoho One implementation" },
+  { client: "Keith Interiors", work: "Zoho One implementation" },
+  { client: "Mabsa Group", work: "Zoho One implementation" },
+  { client: "Infinite Cleaners", work: "Zoho FSM implementation" },
+  { client: "Mini Group of Companies", work: "Zoho Books implementation" },
 ];
 
 const byAge = (a: Project, b: Project) => a.year - b.year || a.order - b.order;

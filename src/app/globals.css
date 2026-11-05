@@ -21,7 +21,6 @@
   --radius: 0.75rem;
 }
 
-html[data-launch="skip"] #launch { display: none; }
 html.lenis, html.lenis body { height: auto; }
 .lenis.lenis-smooth { scroll-behavior: auto !important; }
 .lenis.lenis-stopped { overflow: hidden; }
@@ -89,3 +88,11 @@ main { overflow-x: clip; position: relative; }
 /* The page scrolls as normal but the browser's own scrollbar is hidden: the custom ruler on the right edge replaces it. */
 html { scrollbar-width: none; -ms-overflow-style: none; }
 html::-webkit-scrollbar { width: 0; height: 0; display: none; }
+
+/* Hero entrance: plays on first paint with no script, so the first screen is complete within a second. */
+@keyframes hero-in {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: none; }
+}
+.hero-in { animation: hero-in 0.55s cubic-bezier(0.16, 1, 0.3, 1) both; }
+@media (prefers-reduced-motion: reduce) { .hero-in { animation: none; } }

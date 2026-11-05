@@ -297,13 +297,15 @@ export const timeline = [
 ];
 
 /** Logos are shown only as silhouettes (no links). Each SVG is a traced single-colour mark in /public/partners; ratio is its width / height. */
-export type Partner = { name: string; logo: string; ratio: number };
+/** `scale` enlarges marks that hold fine detail (rings with small lettering) so they stay readable. */
+export type Partner = { name: string; logo: string; ratio: number; scale?: number };
 export const partners: Partner[] = [
   { name: "IKA360", logo: "/partners/ika360.svg", ratio: 1.41 },
   { name: "Jewel in the Mines", logo: "/partners/jewel-in-the-mines.svg", ratio: 8.897 },
   { name: "Ethereal Dayo", logo: "/partners/ethereal-dayo.svg", ratio: 3.061 },
   { name: "Mutende Pharmacare", logo: "/partners/mutende-pharmacare.svg", ratio: 4.63 },
-  { name: "Ficus & Figs", logo: "/partners/ficus-and-figs.svg", ratio: 1 },
+  { name: "Ficus & Figs", logo: "/partners/ficus-and-figs.svg", ratio: 1, scale: 1.45 },
   { name: "Dualpix Communications", logo: "/partners/dualpix-communications.svg", ratio: 3.858 },
+  { name: "Epimax Kenya", logo: "/partners/epimax-kenya.svg", ratio: 1.003, scale: 1.6 },
   { name: "Zoho", logo: "/partners/zoho.svg", ratio: 2.288 },
 ];

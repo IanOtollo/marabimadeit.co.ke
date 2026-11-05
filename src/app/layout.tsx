@@ -21,14 +21,6 @@ export const viewport: Viewport = { themeColor: "#0b0d10" };
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`dark ${display.variable} ${body.variable}`} suppressHydrationWarning>
-      <head>
-        {/* Returning visitors never see the launch overlay, not even for a frame. */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: "try{var t=+localStorage.getItem('mmi-launch');if(t&&Date.now()-t<12096e5)document.documentElement.setAttribute('data-launch','skip')}catch(e){}",
-          }}
-        />
-      </head>
       <body>
         <Shell>{children}</Shell>
       </body>

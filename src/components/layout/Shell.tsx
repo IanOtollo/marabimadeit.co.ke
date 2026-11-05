@@ -1,8 +1,6 @@
 "use client";
 
-import { createContext, useCallback, useContext, useMemo, useState } from "react";
-import { AnimatePresence } from "framer-motion";
-import { Launch } from "./Launch";
+import { createContext, useContext, useMemo } from "react";
 import { useLenis } from "@/hooks/useLenis";
 import { Navbar } from "./Navbar";
 import { Footer } from "./Footer";
@@ -25,8 +23,6 @@ function ContactBridge({ children }: { children: React.ReactNode }) {
 
 export function Shell({ children }: { children: React.ReactNode }) {
   useLenis();
-  const [loading, setLoading] = useState(true);
-  const done = useCallback(() => setLoading(false), []);
 
   return (
     <MarabiProvider>
@@ -34,7 +30,6 @@ export function Shell({ children }: { children: React.ReactNode }) {
         <a href="#main" className="sr-only-focusable fixed left-4 top-4 z-[110] rounded-xl bg-primary px-4 py-2 text-primary-foreground">
           Skip to content
         </a>
-        <AnimatePresence>{loading && <Launch onDone={done} />}</AnimatePresence>
         <Navbar />
         <main id="main">{children}</main>
         <Footer />

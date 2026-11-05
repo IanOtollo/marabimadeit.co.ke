@@ -10,10 +10,11 @@ const MAX_W = 13; // rem: very wide marks are capped so they carry the same visu
 
 /** One logo as a silhouette: the SVG is used as a mask over the current text colour, so it follows the theme and turns primary on hover. */
 function Mark({ p, hidden = false }: { p: Partner; hidden?: boolean }) {
-  const w = Math.min(p.ratio * H, MAX_W);
+  const base = H * (p.scale ?? 1);
+  const w = Math.min(p.ratio * base, MAX_W);
   const h = w / p.ratio;
   return (
-    <li className="flex shrink-0 items-center justify-center" style={{ width: `${Math.max(w, 5)}rem`, height: `${H}rem` }} aria-hidden={hidden || undefined}>
+    <li className="flex shrink-0 items-center justify-center" style={{ width: `${Math.max(w, 5)}rem`, height: `${Math.max(H, h)}rem` }} aria-hidden={hidden || undefined}>
       <span
         role={hidden ? undefined : "img"}
         aria-label={hidden ? undefined : `${p.name} logo`}
