@@ -4,6 +4,7 @@ import { site } from "@/data/site";
 import { Eyebrow, Reveal, Section } from "@/components/ui/Reveal";
 import { ContactForm } from "@/components/layout/ContactForm";
 import { LocalClock } from "@/components/layout/LocalClock";
+import { MarabiHint } from "@/components/bot/MarabiHint";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -11,17 +12,17 @@ export const metadata: Metadata = {
 };
 
 const steps = [
-  { t: "You write to us", d: "Tell us the problem and, if you have one, a budget range." },
+  { t: "You write to us", d: "Tell us the problem and what you need." },
   { t: "We reply in one business day", d: "A short call to understand your goals, free of charge." },
-  { t: "You get a written proposal", d: "Scope, timeline and a fixed price. No obligation to proceed." },
+  { t: "You get a written proposal", d: "Scope, plan and a written quote. No obligation to proceed." },
 ];
 
 export default function ContactPage() {
   return (
-    <Section className="pt-16 md:pt-24">
+    <Section className="pt-16 md:pt-24" info="location">
       <Reveal>
         <Eyebrow>Contact</Eyebrow>
-        <h1 className="max-w-4xl text-5xl tracking-tighter sm:text-6xl lg:text-7xl">Tell us what you want to build.</h1>
+        <div className="flex flex-wrap items-center gap-4"><h1 className="max-w-4xl text-5xl tracking-tighter sm:text-6xl lg:text-7xl">Tell us what you want to build.</h1><MarabiHint topic="location" label="Ask Marabi how to reach us" /></div>
       </Reveal>
       <div className="mt-16 grid gap-12 lg:grid-cols-[1fr_1.2fr]">
         <Reveal>

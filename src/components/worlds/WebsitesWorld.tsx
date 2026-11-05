@@ -392,7 +392,7 @@ export function WebsitesWorld() {
       <Section className="overflow-hidden border-y border-border/50 bg-card/40">
         <Reveal>
           <Eyebrow>Timeline</Eyebrow>
-          <h2 className="max-w-3xl text-4xl sm:text-5xl">Six weeks, four reels.</h2>
+          <h2 className="max-w-3xl text-4xl sm:text-5xl">Four stages, in order.</h2>
           <p className="mt-3 text-sm text-muted-foreground">Swipe or scroll sideways. Indicative: your proposal fixes the real dates.</p>
         </Reveal>
         <div className="-mx-4 mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8" tabIndex={0} aria-label="Project phases, scrollable">

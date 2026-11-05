@@ -63,3 +63,17 @@ html.lenis, html.lenis body { height: auto; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }
+
+/* Nothing may widen the page on a phone. `clip` (unlike `hidden`) does not create a scroll container, so sticky sections keep working. */
+main { overflow-x: clip; }
+
+/* Partner logos drift left to right, slowly; hovering pauses them. */
+@keyframes marquee-right {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0); }
+}
+.marquee-track { animation: marquee-right 110s linear infinite; }
+.marquee:hover .marquee-track { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track { animation: none; transform: none; }
+}

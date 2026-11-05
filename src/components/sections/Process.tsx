@@ -8,7 +8,7 @@ import { ProcessStrip } from "./ProcessJourney";
 
 export function Process() {
   return (
-    <Section id="process" rail="How we work" tip="process" className="border-y border-border/50 bg-card/40">
+    <Section id="process" rail="How we work" info="process" className="border-y border-border/50 bg-card/40">
       <div data-hint-scene>
         <Reveal>
           <Eyebrow>How we work · our life cycle, in order</Eyebrow>
@@ -24,7 +24,7 @@ export function Process() {
           <ProcessStrip />
         </div>
         <Link href="/process" className="mt-8 inline-flex items-center gap-2 text-primary underline-offset-4 hover:underline">
-          Walk through all six stages, week by week <ArrowUpRight size={18} />
+          Walk through all six stages, in order <ArrowUpRight size={18} />
         </Link>
       </div>
     </Section>

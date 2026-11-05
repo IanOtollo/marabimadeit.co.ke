@@ -247,7 +247,7 @@ export function CrmErpWorld() {
       <Section>
         <Reveal>
           <Eyebrow>Timeline</Eyebrow>
-          <h2 className="mb-10 max-w-3xl text-4xl sm:text-5xl">Twelve weeks, climbing.</h2>
+          <h2 className="mb-10 max-w-3xl text-4xl sm:text-5xl">Climbing, stage by stage.</h2>
         </Reveal>
         <Stairs />
       </Section>

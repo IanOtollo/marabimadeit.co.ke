@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, ArrowUp, Check, EyeOff, X } from "lucide-react";
-import { byId, greetings, matchTopic } from "@/data/botKnowledge";
+import { byId, followUp, greetings, matchTopic, smallTalk, type Topic } from "@/data/botKnowledge";
 import { doors, site } from "@/data/site";
 import { cn, ease } from "@/lib/utils";
 import { OrbBody } from "./OrbBody";
@@ -15,9 +15,7 @@ type Msg = { id: number; from: "bot" | "me"; text: string; chips?: { label: stri
 const DOOR_OPTS = [...doors.map((d) => ({ id: d.id, label: d.title })), { id: "unsure", label: "Not sure yet" }];
 const STAGE = ["An idea, nothing built yet", "Replacing something that exists", "Adding to what I already have", "Not sure yet"];
 const TIMING = ["As soon as possible", "Within 1 to 2 months", "In 3 months or more", "I am flexible"];
-const BUDGET = ["Under KES 100,000", "KES 100,000 to 300,000", "KES 300,000 to 800,000", "KES 800,000 and above", "Let us discuss it"];
-
-type Brief = { door?: string; stage?: string; timing?: string; budget?: string; name?: string; contact?: string; note?: string };
+type Brief = { door?: string; stage?: string; timing?: string; name?: string; contact?: string; note?: string };
 
 const chip =
   "rounded-xl border border-border bg-background px-4 py-3 text-left text-sm transition hover:border-primary hover:bg-muted active:scale-[0.98]";
@@ -28,7 +26,7 @@ function Starter() {
   const [step, setStep] = useState(() => (m.preset?.door ? 1 : 0));
   const [sent, setSent] = useState<null | "wa" | "mail">(null);
   const [err, setErr] = useState("");
-  const TOTAL = 5;
+  const TOTAL = 4;
 
   const set = (patch: Brief, next = true) => {
     const b = { ...brief, ...patch };
@@ -45,7 +43,6 @@ function Starter() {
         `I'm interested in: ${doorLabel}.`,
         brief.stage && `Where I am: ${brief.stage}.`,
         brief.timing && `Timing: ${brief.timing}.`,
-        brief.budget && `Budget: ${brief.budget}.`,
         brief.note && `Notes: ${brief.note}`,
         `Reach me on: ${brief.contact || "-"}`,
       ]
@@ -152,18 +149,6 @@ function Starter() {
           )}
           {step === 3 && (
             <>
-              <Q title="Roughly what budget?" sub="Optional. It only helps us suggest the right shape." />
-              <div className="grid gap-2">
-                {BUDGET.map((o) => (
-                  <button key={o} className={chip} onClick={() => set({ budget: o })}>
-                    {o}
-                  </button>
-                ))}
-              </div>
-            </>
-          )}
-          {step === 4 && (
-            <>
               <Q title="Last step: how do we reach you?" sub="Then I package everything for you." />
               <div className="space-y-3">
                 <input value={brief.name ?? ""} onChange={(e) => set({ name: e.target.value }, false)} placeholder="Your name" aria-label="Your name" autoComplete="name" className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:border-primary" />
@@ -205,7 +190,6 @@ function Chat() {
       text: m.name ? greetings.back(m.name) : greetings.new,
       chips: [
         { label: "Start a project", start: true },
-        { label: "What does it cost?", topic: "pricing" },
         { label: "How long does it take?", topic: "timeline" },
         { label: "How do you work?", topic: "process" },
       ],
@@ -215,8 +199,31 @@ function Chat() {
   const [typing, setTyping] = useState(false);
   const end = useRef<HTMLDivElement>(null);
   const id = useRef(2);
+  const lastTopic = useRef<Topic | null>(null);
+  const handledAsk = useRef(0);
+  const LEADS = ["", "Good question. ", "Happy to explain. ", ""];
 
-  useEffect(() => end.current?.scrollIntoView({ behavior: "smooth", block: "end" }), [msgs, typing]);
+  useEffect(() => {
+    end.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+  }, [msgs, typing]);
+
+  const chipFor = (label: string) => {
+    if (/start a project|send it to the team/i.test(label)) return { label, start: true };
+    if (/what can you build/i.test(label)) return { label, topic: "overview" };
+    if (/how do you work/i.test(label)) return { label, topic: "process" };
+    return { label };
+  };
+
+  /** A reply that is not a plain topic answer: small-talk and context-aware follow-ups. */
+  const say = (r: { text: string; chips?: string[]; link?: Topic["link"] }, userText: string) => {
+    setMsgs((p) => [...p, { id: id.current++, from: "me", text: userText }]);
+    setTyping(true);
+    m.setMood("talking", 1500);
+    setTimeout(() => {
+      setMsgs((p) => [...p, { id: id.current++, from: "bot", text: r.text, link: r.link, chips: r.chips?.map(chipFor) }]);
+      setTyping(false);
+    }, 550);
+  };
 
   const reply = (topicId: string | null, userText?: string) => {
     if (userText) setMsgs((p) => [...p, { id: id.current++, from: "me", text: userText }]);
@@ -224,8 +231,9 @@ function Chat() {
     m.setMood("talking", 1800);
     setTimeout(() => {
       const t = topicId ? byId(topicId) : null;
+      if (t) lastTopic.current = t;
       const bot: Msg = t
-        ? { id: id.current++, from: "bot", text: t.answer, link: t.link, chips: [...t.follow.map((f) => ({ label: byId(f)?.title ?? f, topic: f })), { label: "Start a project", start: true }] }
+        ? { id: id.current++, from: "bot", text: LEADS[id.current % LEADS.length] + t.answer, link: t.link, chips: [...t.follow.map((f) => ({ label: byId(f)?.title ?? f, topic: f })), { label: "Start a project", start: true }] }
         : {
             id: id.current++,
             from: "bot",
@@ -242,10 +250,23 @@ function Chat() {
     const v = text.trim();
     if (!v) return;
     setText("");
+    const talk = smallTalk(v, m.name);
+    if (talk) return say(talk, v);
     const t = matchTopic(v);
+    const fu = !t || v.split(/\s+/).length <= 7 ? followUp(v, lastTopic.current) : null;
+    if (fu) return say(fu, v);
     reply(t?.id ?? null, v);
     if (!t) m.remember({ draft: { ...(m.memory.draft ?? {}), note: v } });
   };
+
+  // "Go deeper" from a bubble lands here with the topic already asked
+  useEffect(() => {
+    if (m.ask && m.ask.id !== handledAsk.current) {
+      handledAsk.current = m.ask.id;
+      reply(m.ask.topic, byId(m.ask.topic)?.title ?? undefined);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [m.ask?.id]);
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
@@ -287,7 +308,7 @@ function Chat() {
         <div ref={end} />
       </div>
       <form onSubmit={submit} className="flex gap-2 border-t border-border p-3">
-        <input value={text} onChange={(e) => setText(e.target.value)} placeholder="Ask about pricing, M-Pesa, timelines..." aria-label="Ask Marabi a question" className="min-w-0 flex-1 rounded-xl border border-border bg-background px-4 py-2.5 text-sm outline-none focus:border-primary" />
+        <input value={text} onChange={(e) => setText(e.target.value)} placeholder="Ask about M-Pesa, timelines, process..." aria-label="Ask Marabi a question" className="min-w-0 flex-1 rounded-xl border border-border bg-background px-4 py-2.5 text-sm outline-none focus:border-primary" />
         <button aria-label="Send" className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground transition hover:opacity-90 active:scale-95">
           <ArrowUp size={18} />
         </button>

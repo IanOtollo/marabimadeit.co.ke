@@ -12,7 +12,7 @@ const CAP_MS = 8000; // a slow connection is never held hostage
 const TASKS = [
   { id: "page", label: "Page", weight: 0.4 },
   { id: "fonts", label: "Typefaces", weight: 0.25 },
-  { id: "faces", label: "Portraits", weight: 0.35 },
+  { id: "faces", label: "Interface", weight: 0.35 },
 ] as const;
 type TaskId = (typeof TASKS)[number]["id"];
 
@@ -133,17 +133,11 @@ export function Launch({ onDone }: { onDone: () => void }) {
     start.current = performance.now();
     const mark = (k: TaskId) => setDone((d) => ({ ...d, [k]: true }));
 
-    // real work: the document, the typefaces, and the two portraits the hero depends on
+    // real work: the document, the typefaces, and the first paint of the interface
     if (document.readyState === "complete") mark("page");
     else window.addEventListener("load", () => mark("page"), { once: true });
     document.fonts.ready.then(() => mark("fonts"));
-    Promise.all(
-      ["/images/aineah-cutout.png", "/images/ian-cutout.png"].map((src) => {
-        const i = new Image();
-        i.src = src;
-        return i.decode().catch(() => undefined);
-      }),
-    ).then(() => mark("faces"));
+    requestAnimationFrame(() => requestAnimationFrame(() => mark("faces"))); // first real paint of the interface
     const cap = setTimeout(() => setDone({ page: true, fonts: true, faces: true }), CAP_MS);
     return () => clearTimeout(cap);
     // eslint-disable-next-line react-hooks/exhaustive-deps

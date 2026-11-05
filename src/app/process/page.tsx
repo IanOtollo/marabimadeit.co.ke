@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Check } from "lucide-react";
 import { ProcessJourney } from "@/components/sections/ProcessJourney";
-import { Estimator } from "@/components/sections/Estimator";
 import { Eyebrow, Reveal, Section } from "@/components/ui/Reveal";
 import { CtaButton } from "@/components/ui/CtaButton";
 import { MarabiHint } from "@/components/bot/MarabiHint";
@@ -38,7 +37,7 @@ export default function ProcessPage() {
             <MarabiHint topic="process" label="Ask Marabi about the process" />
           </div>
           <p className="mt-8 max-w-2xl text-lg text-muted-foreground">
-            Six stages, in the order they really happen, with the weeks they take. Scroll to move through time: at each stage you will see what we do, what you receive, and the decision that is yours.
+            Six stages, in the order they really happen, with what happens at each one. Timing is flexible and agreed per project. Scroll to move through time: at each stage you will see what we do, what you receive, and the decision that is yours.
           </p>
         </Reveal>
       </Section>
@@ -81,16 +80,6 @@ export default function ProcessPage() {
               ))}
             </ul>
           </Reveal>
-        </div>
-      </Section>
-
-      <Section className="border-t border-border/50" rail="Try it">
-        <Reveal>
-          <Eyebrow>Try it on your idea</Eyebrow>
-          <h2 className="max-w-3xl text-4xl sm:text-5xl">See how the stages stretch to fit your project.</h2>
-        </Reveal>
-        <div className="mt-12">
-          <Estimator compact />
         </div>
       </Section>
 

@@ -6,6 +6,7 @@ import { ArrowLeft, ArrowRight, Check, Clock, Info } from "lucide-react";
 import { site } from "@/data/site";
 import type { LegalDoc } from "@/data/legal";
 import { cn } from "@/lib/utils";
+import { MarabiHint } from "@/components/bot/MarabiHint";
 
 /**
  * Ordered policy list. Kept local (rather than imported from the data module) so the client
@@ -81,7 +82,7 @@ export function LegalPage({ doc }: { doc: LegalDoc }) {
   );
 
   return (
-    <article className="px-4 py-16 sm:px-6 md:py-24 lg:px-8">
+    <article data-marabi-info="legal" className="px-4 py-16 sm:px-6 md:py-24 lg:px-8">
       <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[18rem_1fr]">
         <aside className="lg:sticky lg:top-24 lg:max-h-[calc(100svh-7rem)] lg:self-start lg:overflow-y-auto lg:pr-2">
           <details className="rounded-2xl border border-border bg-card p-4 lg:hidden">
@@ -96,7 +97,7 @@ export function LegalPage({ doc }: { doc: LegalDoc }) {
 
         <div className="min-w-0 max-w-3xl">
           <p className="text-sm uppercase tracking-widest text-muted-foreground">Legal</p>
-          <h1 className="mt-3 text-5xl tracking-tighter sm:text-6xl">{doc.title}</h1>
+          <div className="mt-3 flex flex-wrap items-center gap-4"><h1 className="text-5xl tracking-tighter sm:text-6xl">{doc.title}</h1><MarabiHint topic="legal" label="Ask Marabi about our legal pages" /></div>
           <p className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
             <span>Last updated {site.updated}</span>
             <span className="inline-flex items-center gap-1.5">

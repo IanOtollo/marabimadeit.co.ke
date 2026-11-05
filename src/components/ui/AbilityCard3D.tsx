@@ -106,6 +106,7 @@ export default function AbilityCard3D({ person, index }: { person: Founder; inde
       renderer.domElement.style.touchAction = "pan-y";
       renderer.domElement.style.cursor = "grab";
       renderer.domElement.style.display = "block";
+      renderer.domElement.style.maxWidth = "100%";
       el.appendChild(renderer.domElement);
 
       const scene = new THREE.Scene();

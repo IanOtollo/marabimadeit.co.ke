@@ -23,7 +23,7 @@ export function Orb() {
     const el = root.current!;
     const fine = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const pos = { x: window.innerWidth - S - 16, y: window.innerHeight - S - 96 };
+    const pos = { x: fine ? window.innerWidth - S - 16 : 16, y: window.innerHeight - S - (fine ? 96 : 24) };
     const vel = { x: 0, y: 0 };
     const cur = { x: window.innerWidth * 0.7, y: window.innerHeight * 0.6, t: performance.now(), px: 0, py: 0, moved: 0 };
     let nudges: number[] = [];
@@ -105,7 +105,7 @@ export function Orb() {
         }
         return { x: tx, y: ty };
       }
-      return { x: window.innerWidth - S - 16, y: window.innerHeight - S - 96 + (reduce ? 0 : Math.sin(t / 700) * 4) };
+      return { x: 16, y: window.innerHeight - S - 24 + (reduce ? 0 : Math.sin(t / 700) * 4) };
     };
 
     const tick = (t: number) => {
@@ -164,7 +164,7 @@ export function Orb() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95 }}
             transition={{ duration: 0.3, ease }}
-            className={`pointer-events-auto absolute top-1/2 w-64 -translate-y-1/2 rounded-2xl border border-border bg-card/95 p-4 text-sm shadow-xl backdrop-blur-md ${
+            className={`pointer-events-auto absolute top-1/2 ${bubble.bullets ? "w-72 sm:w-80" : "w-64"} -translate-y-1/2 rounded-2xl border border-border bg-card/95 p-4 text-sm shadow-xl backdrop-blur-md ${
               side === "left" ? "right-full mr-4" : "left-full ml-4"
             }`}
           >
@@ -172,6 +172,16 @@ export function Orb() {
               <X size={14} />
             </button>
             <p className="pr-5 leading-snug">{bubble.text}</p>
+            {bubble.bullets && (
+              <ul className="mt-3 space-y-1.5 text-xs text-muted-foreground">
+                {bubble.bullets.map((b) => (
+                  <li key={b} className="flex gap-2">
+                    <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-primary" />
+                    {b}
+                  </li>
+                ))}
+              </ul>
+            )}
             {bubble.actions && (
               <div className="mt-3 flex flex-wrap gap-2">
                 {bubble.actions.map((a, i) => (

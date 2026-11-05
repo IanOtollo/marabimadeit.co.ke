@@ -17,9 +17,9 @@ export function Reveal({ children, delay = 0, className }: { children: React.Rea
   );
 }
 
-export function Section({ id, rail, tip, children, className = "" }: { id?: string; rail?: string; tip?: string; children: React.ReactNode; className?: string }) {
+export function Section({ id, rail, info, children, className = "" }: { id?: string; rail?: string; info?: string; children: React.ReactNode; className?: string }) {
   return (
-    <section id={id} data-rail={rail} data-marabi-tip={tip} className={`px-4 py-16 sm:px-6 md:py-24 lg:px-8 ${className}`}>
+    <section id={id} data-rail={rail} data-marabi-info={info} className={`px-4 py-16 sm:px-6 md:py-24 lg:px-8 ${className}`}>
       <div className="mx-auto max-w-7xl">{children}</div>
     </section>
   );

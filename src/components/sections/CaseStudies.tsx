@@ -18,7 +18,7 @@ export function CaseStudies({ door }: { door?: DoorId }) {
   const groups = groupByYear(shown);
 
   return (
-    <Section id="work" className="border-t border-border/50">
+    <Section id="portfolio" className="border-t border-border/50">
       <Reveal>
         <Eyebrow>Selected work · case files</Eyebrow>
         <h2 className="max-w-3xl text-4xl sm:text-5xl">The archive.</h2>

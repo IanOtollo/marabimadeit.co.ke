@@ -82,13 +82,13 @@ export function ScrollRail() {
   const hoverMark = hoverRatio === null ? null : marks.find((m) => Math.abs(m.at - hoverRatio) < 0.045);
 
   return (
-    <div className="pointer-events-none fixed right-1 top-1/2 z-[52] flex -translate-y-1/2 flex-col-reverse items-center gap-3 sm:right-3" aria-label="Page position">
+    <div className="pointer-events-none fixed bottom-5 right-4 z-[52] flex flex-col-reverse items-center gap-3 sm:bottom-auto sm:right-3 sm:top-1/2 sm:-translate-y-1/2" aria-label="Page position">
       <button
         onClick={() => scrollToY(0, { duration: 1.6 })}
         aria-label="Back to the top"
         className={cn(
           "pointer-events-auto group relative flex h-9 w-9 items-center justify-center rounded-full border border-border bg-background/70 text-muted-foreground backdrop-blur transition-all duration-300 hover:border-primary hover:text-primary active:scale-90",
-          p > 0.02 ? "opacity-100" : "opacity-60",
+          p > 0.03 ? "opacity-100" : "opacity-60 max-sm:pointer-events-none max-sm:opacity-0",
         )}
       >
         <ChevronUp size={16} className={cn("transition-transform duration-300 group-hover:-translate-y-0.5", p > 0.02 && "animate-bounce")} />
@@ -97,7 +97,7 @@ export function ScrollRail() {
 
       <div
         ref={rail}
-        className="pointer-events-auto relative h-[min(52vh,28rem)] w-8 cursor-grab touch-none select-none active:cursor-grabbing"
+        className="pointer-events-auto relative hidden h-[min(52vh,28rem)] w-8 cursor-grab sm:block touch-none select-none active:cursor-grabbing"
         onPointerMove={(e) => {
           const r = ratioAt(e.clientY);
           setHover(Math.round(r * (TICKS - 1)));

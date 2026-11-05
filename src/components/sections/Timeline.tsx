@@ -5,6 +5,7 @@ import { motion, useInView, useScroll, useSpring, useTransform } from "framer-mo
 import { timeline } from "@/data/site";
 import { Eyebrow, Reveal, Section } from "@/components/ui/Reveal";
 import { cn, ease } from "@/lib/utils";
+import { MarabiHint } from "@/components/bot/MarabiHint";
 
 function Item({ t, i }: { t: (typeof timeline)[number]; i: number }) {
   const ref = useRef<HTMLLIElement>(null);
@@ -50,10 +51,10 @@ export function Timeline() {
   const head = useTransform(fill, [0, 1], ["0%", "100%"]);
 
   return (
-    <Section id="story" rail="Our story" className="overflow-hidden">
+    <Section id="story" rail="Our story" info="story" className="overflow-hidden">
       <Reveal>
         <Eyebrow>Our story</Eyebrow>
-        <h2 className="max-w-3xl text-4xl sm:text-5xl lg:text-6xl">How we got here.</h2>
+        <div className="flex flex-wrap items-center gap-4"><h2 className="max-w-3xl text-4xl sm:text-5xl lg:text-6xl">How we got here.</h2><MarabiHint topic="story" label="Ask Marabi about our story" /></div>
         <p className="mt-6 max-w-xl text-lg text-muted-foreground">Five moments, in order. Follow the line.</p>
       </Reveal>
       <ol ref={list} className="relative mt-16 pl-6 md:pl-0">

@@ -6,8 +6,7 @@ import { CookieSettingsButton } from "./CookieSettingsButton";
 const studio = [
   { href: "/about", label: "About" },
   { href: "/process", label: "Process" },
-  { href: "/work", label: "Work" },
-  { href: "/pricing", label: "Pricing" },
+  { href: "/portfolio", label: "Portfolio" },
   { href: "/faq", label: "Questions" },
   { href: "/contact", label: "Contact" },
 ];
@@ -46,7 +45,7 @@ export function Footer() {
               ))}
               <li>
                 <Link href="/services" className="text-muted-foreground hover:text-primary">
-                  All four doors
+                  All services
                 </Link>
               </li>
             </ul>
@@ -63,7 +62,7 @@ export function Footer() {
               ))}
             </ul>
           </div>
-          <div>
+          <div data-marabi-info="legal">
             <h3 className={h}>Legal</h3>
             <ul className="space-y-2 text-sm">
               {legal.map((l) => (

@@ -8,7 +8,6 @@ export type Founder = {
   intro: string;
   accent: "primary" | "secondary";
   hue: string; // hex used for canvas/3D (kept in sync with CSS variables)
-  image: string; // transparent cutout
   stats: { label: string; value: number }[];
   signature: string;
   order: number; // Founder first
@@ -43,7 +42,6 @@ const foundersRaw: Founder[] = [
     intro: "Builds alongside the founder: front-end craft, integrations and the details that make a build feel finished.",
     accent: "primary",
     hue: "#ffc233",
-    image: "/images/ian-cutout.png",
     signature: "IO",
     stats: [
       { label: "Development", value: 90 },
@@ -63,7 +61,6 @@ const foundersRaw: Founder[] = [
     intro: "Founded the studio and leads its engineering: architecture, code and delivery, from the first commit to launch day.",
     accent: "secondary",
     hue: "#3fd9cf",
-    image: "/images/aineah-cutout.png",
     signature: "AM",
     stats: [
       { label: "Software Engineering", value: 95 },
@@ -163,13 +160,13 @@ export const services: Record<string, ServiceDetail> = {
       { stat: "100%", label: "Source code and content handed over" },
     ],
     phases: [
-      { name: "Discover & plan", duration: "Week 1", text: "Interviews, competitor review, keyword research, sitemap and written scope." },
-      { name: "Design", duration: "Weeks 2 to 3", text: "Wireframes, then UI design with two review rounds, approved before any code." },
-      { name: "Build", duration: "Weeks 3 to 5", text: "Iterative development on a private staging URL you can open at any time." },
-      { name: "Optimise & launch", duration: "Week 6", text: "SEO, performance and accessibility audit, content load, go-live and handover." },
+      { name: "Discover & plan", duration: "Phase 1", text: "Interviews, competitor review, keyword research, sitemap and written scope." },
+      { name: "Design", duration: "Phase 2", text: "Wireframes, then UI design with two review rounds, approved before any code." },
+      { name: "Build", duration: "Phase 3", text: "Iterative development on a private staging URL you can open at any time." },
+      { name: "Optimise & launch", duration: "Phase 4", text: "SEO, performance and accessibility audit, content load, go-live and handover." },
     ],
     faqs: [
-      { q: "How long does a website take?", a: "A typical five to ten page marketing site takes four to six weeks from approved scope. Larger or content-heavy sites take longer and the timeline is fixed in your written proposal." },
+      { q: "How long does a website take?", a: "It depends on scope, how ready your content is, and our task load at the time. The timeline is flexible: we agree a realistic plan in your proposal, and if the project or our workload stretches it, you hear from us early." },
       { q: "Will I be able to edit it myself?", a: "Yes. We connect a content system suited to your team, from simple file-based editing to a full headless CMS, and train you to use it." },
       { q: "Do you handle SEO?", a: "Technical SEO is part of every build: structure, speed, markup and indexing. Ongoing content and link-building campaigns can be added as a separate retainer." },
       { q: "Who owns the site?", a: "You do, on final payment: design files, code and content. We list every open-source component we used so nothing is hidden." },
@@ -197,10 +194,10 @@ export const services: Record<string, ServiceDetail> = {
       { stat: "1", label: "Source of truth for stock across channels" },
     ],
     phases: [
-      { name: "Plan the operation", duration: "Weeks 1 to 2", text: "Catalogue, payments, delivery and fulfilment flow mapped before design." },
-      { name: "Design the journey", duration: "Weeks 2 to 4", text: "Product, cart and checkout designed and prototyped for mobile first." },
-      { name: "Build & integrate", duration: "Weeks 4 to 8", text: "Storefront, admin, payments and delivery integrations, tested with real transactions." },
-      { name: "Test, train, launch", duration: "Weeks 8 to 10", text: "Load and payment testing, staff training, soft launch, then full launch." },
+      { name: "Plan the operation", duration: "Phase 1", text: "Catalogue, payments, delivery and fulfilment flow mapped before design." },
+      { name: "Design the journey", duration: "Phase 2", text: "Product, cart and checkout designed and prototyped for mobile first." },
+      { name: "Build & integrate", duration: "Phase 3", text: "Storefront, admin, payments and delivery integrations, tested with real transactions." },
+      { name: "Test, train, launch", duration: "Phase 4", text: "Load and payment testing, staff training, soft launch, then full launch." },
     ],
     faqs: [
       { q: "Which platform do you use?", a: "We pick the platform to fit the business: an open-source headless stack for flexibility and no per-sale fees, or Shopify where speed to market matters more. We explain the trade-offs before you commit." },
@@ -214,7 +211,7 @@ export const services: Record<string, ServiceDetail> = {
     slug: "software",
     headline: "Software shaped to the way you work.",
     intro:
-      "Off-the-shelf tools make you bend your process to fit them. When that costs more than it saves, we build software around your actual workflow: web apps, internal portals, customer dashboards, APIs and automations, delivered in small increments so you see progress every fortnight.",
+      "Off-the-shelf tools make you bend your process to fit them. When that costs more than it saves, we build software around your actual workflow: web apps, internal portals, customer dashboards, APIs and automations, delivered in small increments so you see progress regularly.",
     who: "Operations-heavy businesses, startups building a first product, and teams drowning in spreadsheets, WhatsApp threads and manual copy-paste.",
     deliverables: [
       { title: "Product discovery", text: "Workshops to find the real problem, a prioritised backlog, and a clickable prototype validated with your users before heavy build." },
@@ -231,9 +228,9 @@ export const services: Record<string, ServiceDetail> = {
       { stat: "Docs", label: "Handover documentation on every system" },
     ],
     phases: [
-      { name: "Discover", duration: "1 to 2 weeks", text: "Problem framing, user interviews, scope and a prioritised backlog." },
-      { name: "Prototype", duration: "1 to 2 weeks", text: "Clickable prototype tested with real users, estimates tightened." },
-      { name: "Build in sprints", duration: "Typically 8 to 16 weeks", text: "Two-week sprints with demos, staged releases and automated testing." },
+      { name: "Discover", duration: "Phase 1", text: "Problem framing, user interviews, scope and a prioritised backlog." },
+      { name: "Prototype", duration: "Phase 2", text: "Clickable prototype tested with real users, estimates tightened." },
+      { name: "Build in sprints", duration: "Phase 3", text: "Short sprints with demos, staged releases and automated testing." },
       { name: "Launch & evolve", duration: "Ongoing", text: "Rollout, training, monitoring, and a roadmap informed by real usage." },
     ],
     faqs: [
@@ -265,10 +262,10 @@ export const services: Record<string, ServiceDetail> = {
       { stat: "Real-time", label: "Stock, sales and receivables visibility" },
     ],
     phases: [
-      { name: "Map & requirements", duration: "Weeks 1 to 2", text: "Workshops with each department, process maps and a written requirements document." },
-      { name: "Configure & build", duration: "Weeks 3 to 8", text: "Platform set-up, custom modules and automations, built and reviewed in stages." },
-      { name: "Migrate & integrate", duration: "Weeks 6 to 10", text: "Data cleaned and imported, integrations connected, everything reconciled." },
-      { name: "Train & go live", duration: "Weeks 10 to 12", text: "Role-based training, a parallel-run period and supported go-live." },
+      { name: "Map & requirements", duration: "Phase 1", text: "Workshops with each department, process maps and a written requirements document." },
+      { name: "Configure & build", duration: "Phase 2", text: "Platform set-up, custom modules and automations, built and reviewed in stages." },
+      { name: "Migrate & integrate", duration: "Phase 3", text: "Data cleaned and imported, integrations connected, everything reconciled." },
+      { name: "Train & go live", duration: "Phase 4", text: "Role-based training, a parallel-run period and supported go-live." },
     ],
     faqs: [
       { q: "Do we need Zoho, or a custom system?", a: "Many businesses are best served by configuring an established platform. We recommend custom only when your process is genuinely unusual. We will tell you plainly which is cheaper in the long run." },
@@ -294,17 +291,18 @@ export const timeline = [
   { date: "The spark", title: "Two brothers, one habit", text: "Building things was always the career plan. It began as how we spent our evenings: one writing code, one asking whether anyone would use it." },
   { date: "First builds", title: "Learning in public", text: "Small sites and tools for people we knew, each one teaching us what clients actually need versus what they ask for." },
   { date: "The shift", title: "From projects to a practice", text: "We stopped treating work as one-offs and started building repeatable process: discovery, design, delivery, support." },
-  { date: "The studio", title: "Marabi Made It", text: "Under one name, with one standard. Websites, e-commerce, software and CRM/ERP, each with its own door." },
+  { date: "The studio", title: "Marabi Made It", text: "Under one name, with one standard. Websites, e-commerce, software and CRM/ERP, each as its own service." },
   { date: "2026", title: "Today", text: "Every project we ship carries our name as its signature, and we stand behind it." },
 ];
 
-export type Partner = { name: string; url?: string; logo?: string; note: string };
-/** Drop each partner's single-colour SVG into /public/partners and set `logo` to render the real silhouette. */
-export const partners: Partner[] = [{ name: "IKA360", url: "https://ika360.co", note: "Technology partner" }];
-
-export const pricing = [
-  { name: "Launch", for: "Websites & portfolios", from: "Quoted", note: "Fixed price after a free discovery call." },
-  { name: "Commerce", for: "E-commerce stores", from: "Quoted", note: "Fixed price, with M-Pesa and delivery scoped in." },
-  { name: "Build", for: "Custom software", from: "Quoted", note: "Phased estimates so you commit one step at a time." },
-  { name: "Operate", for: "CRM / ERP", from: "Quoted", note: "Per module and per user, with migration scoped separately." },
+/** Logos are shown only as silhouettes (no links). Each SVG is a traced single-colour mark in /public/partners; ratio is its width / height. */
+export type Partner = { name: string; logo: string; ratio: number };
+export const partners: Partner[] = [
+  { name: "IKA360", logo: "/partners/ika360.svg", ratio: 1.41 },
+  { name: "Jewel in the Mines", logo: "/partners/jewel-in-the-mines.svg", ratio: 8.897 },
+  { name: "Ethereal Dayo", logo: "/partners/ethereal-dayo.svg", ratio: 3.061 },
+  { name: "Mutende Pharmacare", logo: "/partners/mutende-pharmacare.svg", ratio: 4.63 },
+  { name: "Ficus & Figs", logo: "/partners/ficus-and-figs.svg", ratio: 1 },
+  { name: "Dualpix Communications", logo: "/partners/dualpix-communications.svg", ratio: 3.858 },
+  { name: "Zoho", logo: "/partners/zoho.svg", ratio: 2.288 },
 ];

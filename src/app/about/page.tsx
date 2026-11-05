@@ -6,6 +6,7 @@ import { FounderCards } from "@/components/sections/FounderCards";
 import { Timeline } from "@/components/sections/Timeline";
 import { Process } from "@/components/sections/Process";
 import { Partners } from "@/components/sections/Partners";
+import { MarabiHint } from "@/components/bot/MarabiHint";
 
 export const metadata: Metadata = {
   title: "About",
@@ -22,10 +23,10 @@ const values = [
 export default function AboutPage() {
   return (
     <>
-      <Section className="pt-16 md:pt-24">
+      <Section className="pt-16 md:pt-24" info="story">
         <Reveal>
           <Eyebrow>About Marabi Made It</Eyebrow>
-          <h1 className="max-w-5xl text-5xl tracking-tighter sm:text-6xl lg:text-7xl">Two brothers. One studio. One signature.</h1>
+          <div className="flex flex-wrap items-center gap-4"><h1 className="max-w-5xl text-5xl tracking-tighter sm:text-6xl lg:text-7xl">Two brothers. One studio. One signature.</h1><MarabiHint topic="team" label="Ask Marabi about the team" /></div>
           <p className="mt-8 max-w-3xl text-lg text-muted-foreground">
             Marabi Made It is a Nairobi studio that builds websites, e-commerce stores, custom software and CRM/ERP systems. We keep the team small on purpose: the people you meet at the start are the people who design, build and support your work.
           </p>

@@ -13,7 +13,7 @@ export function ContactForm({ autoFocus = false, onNavigate, defaultDoor }: { au
     e.preventDefault();
     const f = new FormData(e.currentTarget);
     const subject = `Project enquiry: ${f.get("door")}`;
-    const body = `Name: ${f.get("name")}\nEmail: ${f.get("email")}\nPhone: ${f.get("phone") || "-"}\nBudget: ${f.get("budget") || "-"}\n\n${f.get("message")}`;
+    const body = `Name: ${f.get("name")}\nEmail: ${f.get("email")}\nPhone: ${f.get("phone") || "-"}\n\n${f.get("message")}`;
     const href = `mailto:${site.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     setSent(href);
     window.location.href = href; // hands off to the visitor's own mail app; nothing is stored by us
@@ -40,22 +40,12 @@ export function ContactForm({ autoFocus = false, onNavigate, defaultDoor }: { au
         <input name="email" type="email" required placeholder="Email" className={field} aria-label="Email" />
         <input name="phone" type="tel" placeholder="Phone (optional)" className={field} aria-label="Phone" />
       </div>
-      <div className="grid gap-4 sm:grid-cols-2">
-        <select name="door" className={field} aria-label="Service" defaultValue={defaultDoor ?? doors[0].title}>
-          {doors.map((d) => (
-            <option key={d.id}>{d.title}</option>
-          ))}
-          <option>Not sure yet</option>
-        </select>
-        <select name="budget" className={field} aria-label="Budget range" defaultValue="">
-          <option value="">Budget (optional)</option>
-          <option>Under KES 100,000</option>
-          <option>KES 100,000 to 300,000</option>
-          <option>KES 300,000 to 800,000</option>
-          <option>KES 800,000 and above</option>
-          <option>Not sure yet</option>
-        </select>
-      </div>
+      <select name="door" className={field} aria-label="Service" defaultValue={defaultDoor ?? doors[0].title}>
+        {doors.map((d) => (
+          <option key={d.id}>{d.title}</option>
+        ))}
+        <option>Not sure yet</option>
+      </select>
       <textarea name="message" required rows={5} placeholder="What are you trying to build?" className={field} aria-label="Project description" />
       <p className="text-xs text-muted-foreground">
         By sending this you agree we may use these details to respond to you, as set out in our{" "}

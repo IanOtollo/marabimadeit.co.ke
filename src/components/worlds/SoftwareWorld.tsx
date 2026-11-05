@@ -243,7 +243,7 @@ function Gantt() {
     <div className="overflow-x-auto">
       <div className="min-w-[36rem]">
         <div className="ml-40 grid grid-cols-20 text-[10px] text-muted-foreground" style={{ gridTemplateColumns: `repeat(${WEEKS}, minmax(0, 1fr))` }} aria-hidden>
-          {[...Array(WEEKS)].map((_, k) => <span key={k} className="border-l border-border pl-1">{k % 2 === 0 ? k + 1 : ""}</span>)}
+          {[...Array(WEEKS)].map((_, k) => <span key={k} className="border-l border-border pl-1">{k === 0 ? "Start" : k === 16 ? "Launch" : ""}</span>)}
         </div>
         <ul className="mt-2 space-y-3">
           {s.phases.map((p, k) => (
@@ -252,7 +252,7 @@ function Gantt() {
               <div className="relative h-9 flex-1 rounded-md bg-muted/40">
                 <motion.div className={cn("absolute top-0 flex h-full items-center overflow-hidden rounded-md px-3 text-xs", k % 2 ? "bg-secondary text-secondary-foreground" : "bg-primary text-primary-foreground")}
                   style={{ left: `${((GANTT[k].from - 1) / WEEKS) * 100}%` }} initial={{ width: 0 }} whileInView={{ width: `${((GANTT[k].to - GANTT[k].from + 1) / WEEKS) * 100}%` }} viewport={{ once: true }} transition={{ duration: 1, ease, delay: k * 0.15 }}>
-                  <span className="whitespace-nowrap">{k === 2 ? "2-week sprints with demos" : `Wk ${GANTT[k].from}-${GANTT[k].to}`}</span>
+                  <span className="whitespace-nowrap">{k === 2 ? "Short sprints with demos" : `Phase ${k + 1}`}</span>
                 </motion.div>
               </div>
             </li>
@@ -288,7 +288,7 @@ export function SoftwareWorld() {
       <Section id="board" className="border-y border-border/50 bg-card/40">
         <Reveal>
           <Eyebrow>Cadence</Eyebrow>
-          <h2 className="mb-10 max-w-3xl text-4xl sm:text-5xl">Two-week sprints. Work you can see.</h2>
+          <h2 className="mb-10 max-w-3xl text-4xl sm:text-5xl">Short sprints. Work you can see.</h2>
         </Reveal>
         <Board />
       </Section>
@@ -316,7 +316,7 @@ export function SoftwareWorld() {
       <Section>
         <Reveal>
           <Eyebrow>Timeline</Eyebrow>
-          <h2 className="mb-10 max-w-3xl text-4xl sm:text-5xl">Twenty weeks, on one axis.</h2>
+          <h2 className="mb-10 max-w-3xl text-4xl sm:text-5xl">One axis, start to launch.</h2>
         </Reveal>
         <Gantt />
       </Section>

@@ -1,12 +1,12 @@
 import { doors, site } from "@/data/site";
 import { Hero } from "@/components/sections/Hero";
 import { CharacterIntro } from "@/components/sections/CharacterIntro";
-import { Doors } from "@/components/sections/Doors";
+import { ServicesGrid } from "@/components/sections/ServicesGrid";
 import { Process } from "@/components/sections/Process";
 import { Partners } from "@/components/sections/Partners";
 import { ClosingCta } from "@/components/sections/ClosingCta";
 
-/** Home is a short, calm journey: meet us, walk the doors, see how we work, who trusts us, begin. The deeper material lives on its own pages. */
+/** Home is a short, calm journey: meet us, see what we do, see how we work, who trusts us, begin. The deeper material lives on its own pages. */
 export default function Home() {
   const jsonLd = {
     "@context": "https://schema.org",
@@ -24,7 +24,7 @@ export default function Home() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <Hero />
       <CharacterIntro />
-      <Doors />
+      <ServicesGrid />
       <Process />
       <Partners />
       <ClosingCta />

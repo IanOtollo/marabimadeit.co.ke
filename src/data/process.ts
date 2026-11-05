@@ -3,7 +3,7 @@ export type Stage = {
   n: string;
   name: string;
   window: string; // when it happens, relative to kickoff
-  weeks: [number, number]; // start/end week on the shared axis
+  weeks: [number, number]; // relative position on the shared axis. Not calendar weeks: real timing is flexible and agreed per project.
   tagline: string;
   what: string;
   deliver: string[];
@@ -16,7 +16,7 @@ export const stages: Stage[] = [
     id: "discover",
     n: "01",
     name: "Discover",
-    window: "Week 1",
+    window: "At the start",
     weeks: [0, 1],
     tagline: "We listen before we draw anything.",
     what: "Interviews with you and your users, a look at competitors and the numbers behind your business, and keyword research for what customers actually search. We write down what success means in a sentence you can check later.",
@@ -27,18 +27,18 @@ export const stages: Stage[] = [
     id: "define",
     n: "02",
     name: "Define",
-    window: "Weeks 1 to 2",
+    window: "Before design begins",
     weeks: [1, 2],
-    tagline: "Scope, price and dates, fixed in writing.",
-    what: "Sitemap or system map, feature list split into must-have and later, technical approach, timeline and a fixed quote. Anything that is out of scope is named, so nobody is surprised at week eight.",
-    deliver: ["Written scope and sitemap", "Technical approach", "Timeline with milestones", "Fixed quote and payment schedule"],
+    tagline: "Scope and plan, agreed in writing.",
+    what: "Sitemap or system map, feature list split into must-have and later, technical approach, a flexible plan and a written quote. Anything that is out of scope is named, so nobody is surprised halfway through.",
+    deliver: ["Written scope and sitemap", "Technical approach", "Plan with milestones", "Written quote and payment schedule"],
     decide: "You approve scope and the quote before work begins.",
   },
   {
     id: "design",
     n: "03",
     name: "Design",
-    window: "Weeks 2 to 4",
+    window: "Before any code",
     weeks: [2, 4],
     tagline: "Wireframes first, then the real thing.",
     what: "Low-fidelity wireframes to settle structure and flow, then high-fidelity UI/UX with a design system: type, colour, spacing and components, checked at phone width first. Two review rounds are built in.",
@@ -49,18 +49,18 @@ export const stages: Stage[] = [
     id: "develop",
     n: "04",
     name: "Develop",
-    window: "Weeks 4 to 8",
+    window: "The main stretch",
     weeks: [4, 8],
     tagline: "Built in short loops you can open any day.",
-    what: "Engineering in two-week iterations on a private staging URL. Accessibility, performance and SEO are built in as we go. Integrations such as M-Pesa, SMS, email and accounting are wired up and tested with real transactions.",
-    deliver: ["Working staging site or app", "Integrations tested end to end", "Automated tests on critical paths", "Fortnightly demos"],
+    what: "Engineering in short iterations on a private staging URL. Accessibility, performance and SEO are built in as we go. Integrations such as M-Pesa, SMS, email and accounting are wired up and tested with real transactions.",
+    deliver: ["Working staging site or app", "Integrations tested end to end", "Automated tests on critical paths", "Regular demos"],
     decide: "You review each demo and steer the next iteration.",
   },
   {
     id: "deliver",
     n: "05",
     name: "Deliver",
-    window: "Weeks 8 to 10",
+    window: "Approaching launch",
     weeks: [8, 10],
     tagline: "Tested, tuned, launched, handed over.",
     what: "Cross-device testing, a performance and accessibility audit, a security pass, content load and a planned go-live with DNS, SSL, email and backups ready. You get a recorded walkthrough and documentation.",
@@ -71,7 +71,7 @@ export const stages: Stage[] = [
     id: "evolve",
     n: "06",
     name: "Develop further",
-    window: "Week 10 onward",
+    window: "After launch",
     weeks: [10, 12],
     tagline: "Launch is the start of the data, not the end of the work.",
     what: "Thirty days of defect cover are included. After that: monitoring, security updates, analytics reviews and a rolling roadmap, on a maintenance plan sized to what you need.",

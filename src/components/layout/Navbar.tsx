@@ -14,9 +14,8 @@ import { BotDock } from "@/components/bot/BotDock";
 const links = [
   { href: "/services", label: "Services" },
   { href: "/process", label: "Process" },
-  { href: "/work", label: "Work" },
+  { href: "/portfolio", label: "Portfolio" },
   { href: "/about", label: "About" },
-  { href: "/pricing", label: "Pricing" },
   { href: "/contact", label: "Contact" },
 ];
 
@@ -24,7 +23,9 @@ export function Navbar() {
   const [open, setOpen] = useState(false);
   const path = usePathname();
   const { openContact } = useContact();
-  useEffect(() => setOpen(false), [path]);
+  useEffect(() => {
+    setOpen(false);
+  }, [path]);
   return (
     <nav className="sticky top-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-md" aria-label="Primary">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">

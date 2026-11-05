@@ -3,10 +3,11 @@ import { doors, services, site } from "@/data/site";
 import { FaqExplorer, type FaqGroup } from "@/components/sections/FaqExplorer";
 import { Eyebrow, Reveal, Section } from "@/components/ui/Reveal";
 import { CtaButton } from "@/components/ui/CtaButton";
+import { MarabiHint } from "@/components/bot/MarabiHint";
 
 export const metadata: Metadata = {
   title: "Questions",
-  description: "Straight answers about working with Marabi Made It: process, pricing, M-Pesa, ownership, support and more.",
+  description: "Straight answers about working with Marabi Made It: process, M-Pesa, ownership, support and more.",
   alternates: { canonical: "/faq" },
 };
 
@@ -34,10 +35,10 @@ export default function FaqPage() {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }} />
-      <Section className="pt-16 md:pt-24" rail="Questions">
+      <Section className="pt-16 md:pt-24" rail="Questions" info="start">
         <Reveal>
           <Eyebrow>Questions</Eyebrow>
-          <h1 className="max-w-4xl text-5xl tracking-tighter sm:text-6xl lg:text-7xl">Straight answers.</h1>
+          <div className="flex flex-wrap items-center gap-4"><h1 className="max-w-4xl text-5xl tracking-tighter sm:text-6xl lg:text-7xl">Straight answers.</h1><MarabiHint topic="start" label="Ask Marabi a question" /></div>
           <p className="mt-8 max-w-2xl text-lg text-muted-foreground">Search every question we get asked, or filter by topic. Still stuck? Ask Marabi in the corner.</p>
         </Reveal>
         <div className="mt-12 max-w-4xl">

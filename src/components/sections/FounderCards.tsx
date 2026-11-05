@@ -12,7 +12,7 @@ const AbilityCard3D = dynamic(() => import("@/components/ui/AbilityCard3D"), {
 
 export function FounderCards({ heading = true }: { heading?: boolean }) {
   return (
-    <Section id="cards" rail="The two behind it">
+    <Section id="cards" rail="The two behind it" info="team">
       {heading && (
         <Reveal>
           <Eyebrow>Ability cards</Eyebrow>
@@ -22,7 +22,7 @@ export function FounderCards({ heading = true }: { heading?: boolean }) {
           </p>
         </Reveal>
       )}
-      <div className="mt-12 grid gap-12 md:grid-cols-2">
+      <div className="mt-12 grid grid-cols-[minmax(0,1fr)] gap-12 md:grid-cols-2">
         {founders.map((f, i) => (
           <Reveal key={f.slug} delay={i * 0.1}>
             <AbilityCard3D person={f} index={i} />

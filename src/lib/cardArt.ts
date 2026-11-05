@@ -24,13 +24,6 @@ const mk = () => {
   return cv;
 };
 
-export async function loadImage(src: string) {
-  const img = new Image();
-  img.src = src;
-  await img.decode();
-  return img;
-}
-
 export function readFonts(): Fonts {
   const cs = getComputedStyle(document.documentElement);
   const pick = (v: string, fb: string) => cs.getPropertyValue(v).trim() || fb;
@@ -44,7 +37,6 @@ export async function drawFront(p: Founder, index: number, fonts: Fonts) {
     document.fonts.load(`italic 400 40px ${fonts.display}`),
     document.fonts.load(`500 30px ${fonts.body}`),
   ]).catch(() => undefined);
-  const img = await loadImage(p.image);
 
   const face = mk();
   const mask = mk();
@@ -110,7 +102,7 @@ export async function drawFront(p: Founder, index: number, fonts: Fonts) {
   glow.addColorStop(1, "#05070a");
   c.fillStyle = glow;
   c.fillRect(px, py, pw, ph);
-  // concentric rings behind the figure
+  // concentric rings behind the monogram
   c.strokeStyle = p.hue + "55";
   c.lineWidth = 3;
   for (let r = 160; r < 620; r += 70) {
@@ -118,10 +110,13 @@ export async function drawFront(p: Founder, index: number, fonts: Fonts) {
     c.arc(px + pw / 2, py + ph * 0.55, r, 0, Math.PI * 2);
     c.stroke();
   }
-  // figure: bottom-aligned, cropped to window
-  const k = (ph * 1.02) / img.height;
-  const iw = img.width * k;
-  c.drawImage(img, px + (pw - iw) / 2, py + ph - img.height * k, iw, img.height * k);
+  // monogram, centred in the window
+  c.textAlign = "center";
+  c.textBaseline = "middle";
+  c.fillStyle = "#f4efe6";
+  c.font = `600 330px ${fonts.display}`;
+  c.fillText(p.signature, px + pw / 2, py + ph * 0.52);
+  c.textBaseline = "alphabetic";
   c.restore();
   c.strokeStyle = p.hue;
   c.lineWidth = 4;

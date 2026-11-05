@@ -362,7 +362,7 @@ export function EcommerceWorld() {
       <Section>
         <Reveal>
           <Eyebrow>Timeline</Eyebrow>
-          <h2 className="mb-14 max-w-3xl text-4xl sm:text-5xl">Ten weeks, one thread.</h2>
+          <h2 className="mb-14 max-w-3xl text-4xl sm:text-5xl">One thread, start to finish.</h2>
         </Reveal>
         <Stepper />
       </Section>

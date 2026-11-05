@@ -1,12 +1,13 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { byId, topics, type Topic } from "@/data/botKnowledge";
+import { useRouter } from "next/navigation";
+import { byId, details, topics, type Topic } from "@/data/botKnowledge";
 
 export type Mood = "idle" | "happy" | "mad" | "sleepy" | "excited" | "talking";
 export type PanelMode = "closed" | "chat" | "start";
 export type Preset = { door?: string; note?: string };
-export type Bubble = { id: number; text: string; topic?: string; actions?: { label: string; run: () => void }[] };
+export type Bubble = { id: number; text: string; topic?: string; bullets?: string[]; actions?: { label: string; run: () => void }[] };
 
 type Memory = { name?: string; draft?: Record<string, string>; sparks?: number };
 const KEY = "mmi-bot";
@@ -21,6 +22,8 @@ type Ctx = {
   goto: { el: HTMLElement; id: number } | null;
   spark: { el: HTMLElement; id: number } | null;
   preset: Preset | null;
+  ask: { topic: string; id: number } | null;
+  askTopic: (topic: string) => void;
   name?: string;
   dock: HTMLElement | null;
   registerDock: (el: HTMLElement | null) => void;
@@ -64,6 +67,8 @@ export function MarabiProvider({ children, onFullForm }: { children: React.React
   const [goto, setGoto] = useState<Ctx["goto"]>(null);
   const [spark, setSpark] = useState<Ctx["spark"]>(null);
   const [preset, setPreset] = useState<Preset | null>(null);
+  const [ask, setAsk] = useState<{ topic: string; id: number } | null>(null);
+  const router = useRouter();
   const [dock, setDock] = useState<HTMLElement | null>(null);
   const [memory, setMemory] = useState<Memory>({});
   const seq = useRef(0);
@@ -163,6 +168,16 @@ export function MarabiProvider({ children, onFullForm }: { children: React.React
     }, 3400);
   }, [setMood]);
 
+  const askTopic = useCallback(
+    (topic: string) => {
+      wake();
+      setBubble(null);
+      setPanel("chat");
+      setAsk({ topic, id: ++seq.current });
+    },
+    [wake],
+  );
+
   const explain = useCallback(
     (topicId: string, el?: HTMLElement | null) => {
       const t = byId(topicId);
@@ -172,13 +187,15 @@ export function MarabiProvider({ children, onFullForm }: { children: React.React
       if (el) setGoto({ el, id });
       setMood("talking", 4200);
       const actions: NonNullable<Bubble["actions"]> = [
-        { label: "Tell me more", run: () => openChat() },
+        { label: "Go deeper", run: () => askTopic(t.id) },
+        ...(t.link ? [{ label: "Open page", run: () => router.push(t.link!.href) }] : []),
         { label: t.door ? "Start with this" : "Start a project", run: () => openStart(t.door ? { door: t.door } : undefined) },
       ];
-      setTimeout(() => say({ text: t.short, topic: t.id, actions }, 12000), el ? 700 : 0);
-      setTimeout(() => setGoto((g) => (g && g.id === id ? null : g)), 12500);
+      setTimeout(() => say({ text: t.short, topic: t.id, bullets: details[t.id], actions }, 22000), el ? 700 : 0);
+      setTimeout(() => setGoto((g) => (g && g.id === id ? null : g)), 22500);
     },
-    [wake, setMood, say, openChat, openStart],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [wake, setMood, say, openChat, openStart, router],
   );
 
   // inactivity: five minutes with no input and the assistant goes to sleep in the logo
@@ -197,6 +214,36 @@ export function MarabiProvider({ children, onFullForm }: { children: React.React
     };
   }, [sleep]);
 
+  // double-click (desktop) or double-tap (phone) on any area marked data-marabi-info and Marabi explains it
+  const explainRef = useRef(explain);
+  explainRef.current = explain;
+  useEffect(() => {
+    const trigger = (target: EventTarget | null) => {
+      const t = target as HTMLElement | null;
+      const el = t?.closest?.("[data-marabi-info]") as HTMLElement | null;
+      if (!el || !t) return;
+      if (t.closest("button, a, input, textarea, select, summary, label, [role=dialog], [role=slider]")) return;
+      window.getSelection()?.removeAllRanges();
+      explainRef.current(el.dataset.marabiInfo || "overview", el);
+    };
+    const onDbl = (e: MouseEvent) => trigger(e.target);
+    let last = { t: 0, x: 0, y: 0 };
+    const onTouch = (e: TouchEvent) => {
+      const c = e.changedTouches[0];
+      const now = Date.now();
+      if (now - last.t < 320 && Math.hypot(c.clientX - last.x, c.clientY - last.y) < 30) {
+        trigger(e.target);
+        last = { t: 0, x: 0, y: 0 };
+      } else last = { t: now, x: c.clientX, y: c.clientY };
+    };
+    document.addEventListener("dblclick", onDbl);
+    document.addEventListener("touchend", onTouch, { passive: true });
+    return () => {
+      document.removeEventListener("dblclick", onDbl);
+      document.removeEventListener("touchend", onTouch);
+    };
+  }, []);
+
   // gentle, limited attention-pulls: first a hello, then at most three nudges toward the CTA
   useEffect(() => {
     if (hidden || asleep) return;
@@ -210,7 +257,7 @@ export function MarabiProvider({ children, onFullForm }: { children: React.React
       if (seen) return;
       say(
         {
-          text: memory.name ? `Karibu back, ${memory.name}. Want to pick up your brief?` : "Habari! I'm Marabi 2.0. Need a hand finding your way, or shall I map your project?",
+          text: memory.name ? `Karibu back, ${memory.name}. Want to pick up your brief?` : "Habari! I'm Marabi 2.0. Double-tap any section and I'll explain it, or tap me to ask.",
           actions: [
             { label: "Ask me", run: () => openChat() },
             { label: "Start a project", run: () => openStart() },
@@ -231,7 +278,7 @@ export function MarabiProvider({ children, onFullForm }: { children: React.React
       if (!el) return;
       count++;
       pointTo(el);
-      say({ text: "Psst. Starting is easier than it looks: five taps and I'll package the brief.", actions: [{ label: "Show me", run: () => openStart() }] }, 6000);
+      say({ text: "Psst. Starting is easier than it looks: a few taps and I'll package the brief.", actions: [{ label: "Show me", run: () => openStart() }] }, 6000);
     }, 75000);
     return () => {
       clearTimeout(hello);
@@ -242,12 +289,12 @@ export function MarabiProvider({ children, onFullForm }: { children: React.React
 
   const value = useMemo<Ctx>(
     () => ({
-      panel, asleep, hidden, mood, bubble, goto, spark, preset, name: memory.name, dock, memory,
+      panel, asleep, hidden, mood, bubble, goto, spark, preset, ask, askTopic, name: memory.name, dock, memory,
       registerDock: setDock,
       openChat, openStart, openFullForm: () => { setPanel("closed"); onFullForm(); },
       close, wake, sleep, hide, setMood, say, dismissBubble, explain, pointTo, remember,
     }),
-    [panel, asleep, hidden, mood, bubble, goto, spark, preset, memory, dock, openChat, openStart, close, wake, sleep, hide, setMood, say, dismissBubble, explain, pointTo, remember, onFullForm],
+    [panel, asleep, hidden, mood, bubble, goto, spark, preset, ask, askTopic, memory, dock, openChat, openStart, close, wake, sleep, hide, setMood, say, dismissBubble, explain, pointTo, remember, onFullForm],
   );
 
   return <C.Provider value={value}>{children}</C.Provider>;

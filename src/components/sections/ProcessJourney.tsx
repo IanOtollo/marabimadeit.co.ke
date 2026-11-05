@@ -137,7 +137,7 @@ function Illustration({ id }: { id: string }) {
   );
 }
 
-/* ---------- the week axis: the chronological spine ---------- */
+/* ---------- the stage axis: the chronological spine, in order rather than in calendar weeks ---------- */
 function Axis({ progress, active }: { progress: number; active: number }) {
   const pct = (w: number) => `${(w / AXIS_WEEKS) * 100}%`;
   return (
@@ -152,10 +152,10 @@ function Axis({ progress, active }: { progress: number; active: number }) {
             />
           </div>
         ))}
-        <div className="absolute top-6 flex w-full justify-between text-[10px] tabular-nums text-muted-foreground">
-          {Array.from({ length: AXIS_WEEKS + 1 }, (_, w) => (
-            <span key={w} className={cn(w % 2 && "hidden sm:block")}>{w === 0 ? "Day 0" : `W${w}`}</span>
-          ))}
+        <div className="absolute top-6 flex w-full justify-between text-[10px] uppercase tracking-widest text-muted-foreground">
+          <span>Kick-off</span>
+          <span>Go-live</span>
+          <span>After launch</span>
         </div>
         <div className="absolute top-[-3px] h-4 w-4 -translate-x-1/2 rounded-full bg-foreground shadow-[0_0_14px_hsl(var(--foreground)/0.6)]" style={{ left: pct(stageWeek(active, progress)) }} />
       </div>
@@ -213,7 +213,7 @@ export function ProcessJourney() {
 
   const s = stages[active];
   return (
-    <div ref={ref} data-rail="The process" className="relative" style={{ height: `${stages.length * 85 + 40}vh` }}>
+    <div ref={ref} data-rail="The process" data-marabi-info="process" className="relative" style={{ height: `${stages.length * 85 + 40}vh` }}>
       <div className="sticky top-0 flex h-[100svh] flex-col overflow-hidden px-4 pb-6 pt-20 sm:px-6 lg:px-8">
         <motion.div className="absolute left-0 top-0 h-0.5 bg-primary" style={{ width: bar }} aria-hidden />
         <div className="pointer-events-none absolute inset-0 ruler opacity-25" aria-hidden />
