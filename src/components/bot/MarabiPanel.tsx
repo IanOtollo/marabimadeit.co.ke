@@ -114,7 +114,7 @@ function Chat() {
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <div className="min-h-0 flex-1 space-y-3 overflow-y-auto p-5" aria-live="polite">
+      <div data-lenis-prevent className="min-h-0 flex-1 space-y-3 overflow-y-auto p-5" aria-live="polite">
         {msgs.map((g) => (
           <div key={g.id} className={cn("flex", g.from === "me" ? "justify-end" : "justify-start")}>
             <div className={cn("max-w-[88%] rounded-2xl px-4 py-3 text-sm leading-relaxed", g.from === "me" ? "bg-primary text-primary-foreground" : "bg-muted")}>

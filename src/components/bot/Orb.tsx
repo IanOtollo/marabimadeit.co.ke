@@ -61,6 +61,7 @@ function ReactionBadge({ kind }: { kind: Reaction["kind"] }) {
 export function Orb() {
   const m = useMarabi();
   const ctx = useRef(m);
+  const trail = useRef<(HTMLSpanElement | null)[]>([]);
   ctx.current = m;
   const root = useRef<HTMLDivElement>(null);
   const btn = useRef<HTMLButtonElement>(null);
@@ -83,6 +84,7 @@ export function Orb() {
     let perchIdx = 0;
     let typingEl: HTMLInputElement | HTMLTextAreaElement | null = null;
     let lastKey = 0; // last keystroke: while recent, Marabi slides alongside the field, fully visible
+    const hist: { x: number; y: number }[] = [];
     let touchField: HTMLElement | null = null; // a field being used on a touch screen
     let lastScroll = 0;
     let hopStart = 0; // touch screens: a small hop in place now and then
@@ -247,6 +249,14 @@ export function Orb() {
           ? { x: window.innerWidth - 24 - PANEL_W - S - 14, y: window.innerHeight - 24 - S - 24 }
           : { x: window.innerWidth - S - 16, y: window.innerHeight - S - 16 };
       }
+      // The shooting-star glide to the call to action: it parks beside the button (below it when the button is in the header), never on it.
+      if (c.star && !reduce) {
+        const r = c.star.el.getBoundingClientRect();
+        const inHeader = !!c.star.el.closest("nav, header");
+        return inHeader
+          ? { x: clamp(r.right - S, 8, window.innerWidth - S - 8), y: clamp(r.bottom + 12, 8, window.innerHeight - S - 8) }
+          : { x: clamp(r.left - S - 18, 8, window.innerWidth - S - 8), y: clamp(r.top + r.height / 2 - S / 2, 8, window.innerHeight - S - 8) };
+      }
       if (fine && !reduce) {
         // While a bubble is showing, hold perfectly still so its buttons are easy to reach.
         if (c.bubble) return { x: pos.x, y: pos.y };
@@ -293,7 +303,7 @@ export function Orb() {
     const tick = (t: number) => {
       raf = requestAnimationFrame(tick);
       const tg = target(t);
-      const k = reduce ? 1 : 0.07;
+      const k = reduce ? 1 : ctx.current.star ? 0.034 : 0.07; // the star glide is deliberately slow, not sluggish
       vel.x = vel.x * 0.8 + (tg.x - pos.x) * k;
       vel.y = vel.y * 0.8 + (tg.y - pos.y) * k;
       // a hard limit: Marabi is always fully on screen, whatever its momentum
@@ -304,6 +314,21 @@ export function Orb() {
       if (pos.x !== nx) vel.x = 0;
       if (pos.y !== ny) vel.y = 0;
       el.style.transform = `translate3d(${pos.x}px, ${pos.y}px, 0)`;
+      // the shooting star's tail: a fading comet of glows along the recent path, only while it is gliding to the button
+      hist.push({ x: pos.x + S / 2, y: pos.y + S / 2 });
+      if (hist.length > 40) hist.shift();
+      const flying = !!ctx.current.star && Math.hypot(vel.x, vel.y) > 0.5;
+      trail.current.forEach((n, i) => {
+        if (!n) return;
+        const h = hist[hist.length - 1 - (i + 1) * 2];
+        if (!flying || !h) {
+          n.style.opacity = "0";
+          return;
+        }
+        const f = 1 - i / trail.current.length;
+        n.style.opacity = String(Math.min(1, Math.hypot(vel.x, vel.y) / 4) * 0.55 * f);
+        n.style.transform = `translate3d(${h.x - 11}px, ${h.y - 11}px, 0) scale(${0.25 + f * 0.75})`;
+      });
       // on touch screens it also fades while the page scrolls or a field is in use, so it never competes with content
       el.style.opacity = !fine && performance.now() - lastScroll < 800 ? "0.38" : !fine && touchField ? "0.7" : "1";
       // pupils look at the cursor on desktop, else along their direction of travel
@@ -391,6 +416,11 @@ export function Orb() {
 
   return (
     <>
+    <div aria-hidden className="pointer-events-none fixed left-0 top-0 z-[54]">
+      {Array.from({ length: 12 }).map((_, i) => (
+        <span key={i} ref={(n) => { trail.current[i] = n; }} className="absolute left-0 top-0 block h-[22px] w-[22px] rounded-full bg-primary opacity-0 blur-[3px]" />
+      ))}
+    </div>
     <div ref={root} className="pointer-events-none fixed left-0 top-0 z-[55] transition-opacity duration-500 will-change-transform" style={{ width: S, height: S }}>
       <motion.div animate={{ opacity: visible ? 1 : 0, scale: visible ? 1 : 0.4 }} transition={{ duration: 0.5, ease }} className={visible ? "pointer-events-auto" : "pointer-events-none"}>
         <button

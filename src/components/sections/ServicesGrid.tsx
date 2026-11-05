@@ -1,17 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { useRef } from "react";
+import { motion, useInView } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import { doors, type Door } from "@/data/site";
 import { Eyebrow, Reveal, Section } from "@/components/ui/Reveal";
 import { MarabiHint } from "@/components/bot/MarabiHint";
 import { useContact } from "@/components/layout/Shell";
 import { cn, ease } from "@/lib/utils";
-import { scrollToY } from "@/lib/scroll";
 
-/* ---------- a small drawn illustration for each service, animated when its row opens ---------- */
+/* ---------- a small drawn illustration for each service, drawn as it scrolls into view ---------- */
 function Glyph({ id }: { id: string }) {
   const line = (d: number) => ({ initial: { pathLength: 0 }, animate: { pathLength: 1 }, transition: { duration: 0.8, delay: d, ease } });
   const pop = (d: number) => ({ initial: { opacity: 0, scale: 0.7 }, animate: { opacity: 1, scale: 1 }, transition: { duration: 0.4, delay: d, ease } });
@@ -79,101 +78,58 @@ function Glyph({ id }: { id: string }) {
   );
 }
 
-function Row({ d, open, onOpen, onToggle }: { d: Door; open: boolean; onOpen: () => void; onToggle: () => void }) {
+/** One service, shown in full: no hovering, clicking or opening needed to read it. */
+function Service({ d }: { d: Door }) {
   const { openContact } = useContact();
-  const reduce = useReducedMotion();
+  const ref = useRef<HTMLLIElement>(null);
+  const seen = useInView(ref, { once: true, margin: "-120px" });
   const tone = d.accent === "primary" ? "text-primary" : "text-secondary";
   const bar = d.accent === "primary" ? "bg-primary" : "bg-secondary";
-  const panelId = `svc-${d.id}`;
 
   return (
-    <li id={d.id} data-marabi-info={d.id} className="relative scroll-mt-24 border-t border-border/60 last:border-b" onMouseEnter={() => matchMedia("(hover: hover)").matches && onOpen()}>
-      <span className={cn("absolute inset-y-0 left-0 w-0.5 origin-top scale-y-0 transition-transform duration-500", bar, open && "scale-y-100")} aria-hidden />
-      <h3>
-        <button onClick={onToggle} aria-expanded={open} aria-controls={panelId} className="group flex w-full items-center gap-4 py-6 pl-4 text-left sm:gap-8 sm:py-8 sm:pl-6">
-          <span className={cn("w-8 shrink-0 font-display text-lg tabular-nums transition-colors duration-300 sm:w-12 sm:text-2xl", open ? tone : "text-muted-foreground")}>{d.index}</span>
-          <span className={cn("min-w-0 flex-1 font-display text-3xl leading-tight tracking-tighter transition-all duration-500 sm:text-5xl lg:text-7xl", open ? "translate-x-1 text-foreground sm:translate-x-3" : "text-foreground/60 group-hover:text-foreground/90")}>{d.title}</span>
-          <span className="hidden max-w-[15rem] text-right text-sm text-muted-foreground lg:block">{d.kicker}</span>
-          <span className={cn("flex h-10 w-10 shrink-0 items-center justify-center rounded-full border transition-all duration-500 sm:h-12 sm:w-12", open ? cn("border-transparent", bar, "text-background") : "border-border text-muted-foreground group-hover:border-foreground/40")}>
-            <ArrowUpRight size={20} className={cn("transition-transform duration-500", open ? "rotate-45" : "rotate-0")} />
-          </span>
-        </button>
-      </h3>
-      <AnimatePresence initial={false}>
-        {open && (
-          <motion.div
-            id={panelId}
-            role="region"
-            aria-label={d.title}
-            initial={reduce ? false : { height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={reduce ? { opacity: 0 } : { height: 0, opacity: 0 }}
-            transition={{ duration: 0.55, ease }}
-            className="overflow-hidden"
-          >
-            <div className="grid gap-8 pb-10 pl-4 sm:pb-12 sm:pl-[5.5rem] md:grid-cols-[1.25fr_1fr] md:gap-12">
-              <div>
-                <p className="max-w-xl text-lg text-muted-foreground">{d.blurb}</p>
-                <ul className="mt-6 flex flex-wrap gap-2">
-                  {d.points.map((p) => (
-                    <li key={p} className="rounded-full border border-border bg-card/60 px-3.5 py-1.5 text-xs sm:text-sm">
-                      {p}
-                    </li>
-                  ))}
-                </ul>
-                <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm">
-                  <Link href={`/services/${d.id}`} className={cn("inline-flex items-center gap-1.5 rounded-xl px-5 py-2.5 font-medium text-background transition active:scale-[0.98] hover:opacity-90", bar)}>
-                    Explore this service <ArrowUpRight size={16} />
-                  </Link>
-                  <button onClick={() => openContact({ door: d.id })} className="text-muted-foreground underline underline-offset-4 hover:text-foreground">
-                    Enquire
-                  </button>
-                </div>
-              </div>
-              <div className={cn("hidden aspect-[8/5] w-full max-w-sm items-center justify-center rounded-2xl border border-border/60 bg-card/40 p-5 md:flex", tone)}>
-                <Glyph id={d.id} />
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </li>
+    <motion.li
+      ref={ref}
+      id={d.id}
+      data-marabi-info={d.id}
+      initial={{ opacity: 0, y: 28 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.7, ease }}
+      className="relative scroll-mt-24 border-t border-border/60 py-10 pl-5 last:border-b sm:py-14 sm:pl-8"
+    >
+      <span className={cn("absolute inset-y-10 left-0 w-0.5 sm:inset-y-14", bar)} aria-hidden />
+      <div className="grid items-center gap-8 md:grid-cols-[1.35fr_1fr] md:gap-14">
+        <div>
+          <p className="flex items-baseline gap-4">
+            <span className={cn("font-display text-2xl tabular-nums", tone)}>{d.index}</span>
+            <span className="text-sm uppercase tracking-widest text-muted-foreground">{d.kicker}</span>
+          </p>
+          <h3 className="mt-3 font-display text-4xl leading-tight tracking-tighter sm:text-5xl lg:text-6xl">{d.title}</h3>
+          <p className="mt-5 max-w-xl text-lg text-muted-foreground">{d.blurb}</p>
+          <ul className="mt-6 flex flex-wrap gap-2">
+            {d.points.map((p) => (
+              <li key={p} className="rounded-full border border-border bg-card/60 px-3.5 py-1.5 text-xs sm:text-sm">
+                {p}
+              </li>
+            ))}
+          </ul>
+          <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm">
+            <Link href={`/services/${d.id}`} className={cn("inline-flex items-center gap-1.5 rounded-xl px-5 py-2.5 font-medium text-background transition hover:opacity-90 active:scale-[0.98]", bar)}>
+              Explore this service <ArrowUpRight size={16} />
+            </Link>
+            <button onClick={() => openContact({ door: d.id })} className="text-muted-foreground underline underline-offset-4 hover:text-foreground">
+              Enquire
+            </button>
+          </div>
+        </div>
+        <div className={cn("hidden aspect-[8/5] w-full max-w-sm items-center justify-center rounded-2xl border border-border/60 bg-card/40 p-5 md:flex md:justify-self-end", tone)}>{seen && <Glyph id={d.id} />}</div>
+      </div>
+    </motion.li>
   );
 }
 
-/** The four services as an editorial index: huge type, one row open at a time. */
+/** The four services, each shown in full, one after the other. */
 export function ServicesGrid({ heading = true }: { heading?: boolean }) {
-  const [open, setOpen] = useState<string | null>(doors[0].id);
-  // a link such as /#crm-erp (or a returning visitor) can land straight on a service
-  useEffect(() => {
-    const h = window.location.hash.slice(1);
-    if (h && doors.some((d) => d.id === h)) setOpen(h);
-  }, []);
-
-  // Fast scrollers (desktop smooth-scroll) used to fly straight past all four services. When someone arrives at this
-  // section at speed, glide them to its start once and let go, so the four services are always seen.
-  useEffect(() => {
-    if (!heading) return;
-    const sec = document.getElementById("services");
-    if (!sec || !window.matchMedia("(hover: hover) and (pointer: fine)").matches || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    let prev = window.scrollY;
-    let used = false;
-    const onScroll = () => {
-      const y = window.scrollY;
-      const v = y - prev;
-      prev = y;
-      if (used || !window.__lenis) return;
-      const stop = sec.getBoundingClientRect().top + y - 84;
-      // crossing into the section from above, moving quickly
-      if (v > 28 && y > stop - 420 && y < stop + 140) {
-        used = true;
-        scrollToY(stop, { duration: 1.1, lock: true });
-      }
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [heading]);
-
   return (
     <Section id="services" rail="Services">
       {heading && (
@@ -183,16 +139,14 @@ export function ServicesGrid({ heading = true }: { heading?: boolean }) {
             <h2 className="max-w-3xl text-4xl sm:text-5xl lg:text-6xl">Four services. One studio.</h2>
             <MarabiHint topic="overview" label="Ask Marabi what we do" />
           </div>
-          <p className="mt-6 max-w-2xl text-lg text-muted-foreground">Websites, e-commerce, software and CRM/ERP, each built end to end by the same two people. Open one to see what is inside.</p>
+          <p className="mt-6 max-w-2xl text-lg text-muted-foreground">Websites, e-commerce, software and CRM/ERP, each built end to end by the same two people.</p>
         </Reveal>
       )}
-      <Reveal className={cn(heading && "mt-12")}>
-        <ul>
-          {doors.map((d) => (
-            <Row key={d.id} d={d} open={open === d.id} onOpen={() => setOpen(d.id)} onToggle={() => setOpen(open === d.id ? null : d.id)} />
-          ))}
-        </ul>
-      </Reveal>
+      <ul className={cn(heading && "mt-12")}>
+        {doors.map((d) => (
+          <Service key={d.id} d={d} />
+        ))}
+      </ul>
     </Section>
   );
 }

@@ -22,6 +22,8 @@ type Ctx = {
   bubble: Bubble | null;
   goto: { el: HTMLElement; id: number } | null;
   spark: { el: HTMLElement; id: number } | null;
+  /** A slow shooting-star glide to the call to action, now and then, to draw the eye to it. */
+  star: { el: HTMLElement; id: number } | null;
   ask: { topic: string; id: number } | null;
   reaction: Reaction | null;
   askTopic: (topic: string) => void;
@@ -68,6 +70,7 @@ export function MarabiProvider({ children }: { children: React.ReactNode }) {
   const [bubble, setBubble] = useState<Bubble | null>(null);
   const [goto, setGoto] = useState<Ctx["goto"]>(null);
   const [spark, setSpark] = useState<Ctx["spark"]>(null);
+  const [star, setStar] = useState<Ctx["star"]>(null);
   const [ask, setAsk] = useState<{ topic: string; id: number } | null>(null);
   const [reaction, setReaction] = useState<Reaction | null>(null);
   const router = useRouter();
@@ -426,6 +429,66 @@ export function MarabiProvider({ children }: { children: React.ReactNode }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [path, hidden, asleep]);
 
+  // Now and then (twice a visit at most) Marabi glides to the "Start a project" button as a slow shooting star, says what it is for, and the
+  // button pulses softly. It stops beside the button, never on it, never clicks, and never interrupts a form, a legal page or an open bubble.
+  useEffect(() => {
+    const skip = ["/start", "/contact", "/privacy", "/terms", "/cookies", "/engagement", "/acceptable-use", "/security", "/accessibility", "/licenses"];
+    if (skip.includes(path) || hidden || asleep) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const timers: ReturnType<typeof setTimeout>[] = [];
+    let pulsed: HTMLElement | null = null;
+    let tries = 0;
+    const retry = () => {
+      if (++tries < 6) timers.push(setTimeout(run, 4000));
+    };
+    const run = () => {
+      let n = 0;
+      try {
+        n = Number(sessionStorage.getItem("mmi-cta-star") || 0);
+      } catch {}
+      if (n >= 2) return;
+      const l = live.current;
+      const tag = document.activeElement?.tagName || "";
+      if (document.hidden || cookieOpen() || panelRef.current !== "closed" || l.asleep || l.hidden || l.bubble || /INPUT|TEXTAREA|SELECT/.test(tag)) return retry();
+      const seen = [...document.querySelectorAll<HTMLElement>("[data-marabi-cta]")].filter((e) => {
+        const r = e.getBoundingClientRect();
+        return r.width > 0 && r.bottom > 0 && r.top < window.innerHeight;
+      });
+      const el = seen.find((e) => !e.closest("nav, header")) || seen[0];
+      if (!el) return retry();
+      try {
+        sessionStorage.setItem("mmi-cta-star", String(n + 1));
+      } catch {}
+      pulsed = el;
+      el.classList.add("mm-pulse");
+      timers.push(setTimeout(() => el.classList.remove("mm-pulse"), 7500));
+      if (!reduce) setStar({ el, id: ++seq.current });
+      timers.push(
+        setTimeout(() => {
+          say(
+            {
+              text: "Ready when you are. Tell me about your project and I will package your brief in a few taps.",
+              actions: [
+                { label: "Start a project", run: () => openStart() },
+                { label: "Not now", run: () => undefined },
+              ],
+            },
+            8000,
+          );
+          setMood("excited", 2000);
+        }, reduce ? 300 : 2800),
+      );
+      timers.push(setTimeout(() => setStar(null), (reduce ? 300 : 2800) + 8800));
+    };
+    timers.push(setTimeout(run, 16000));
+    return () => {
+      timers.forEach(clearTimeout);
+      pulsed?.classList.remove("mm-pulse");
+      setStar(null);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [path, hidden, asleep]);
+
   // one gentle hello per visit
   useEffect(() => {
     if (hidden || asleep) return;
@@ -456,12 +519,12 @@ export function MarabiProvider({ children }: { children: React.ReactNode }) {
 
   const value = useMemo<Ctx>(
     () => ({
-      panel, asleep, hidden, mood, bubble, goto, spark, ask, reaction, askTopic, name: memory.name, dock, memory,
+      panel, asleep, hidden, mood, bubble, goto, spark, star, ask, reaction, askTopic, name: memory.name, dock, memory,
       registerDock: setDock,
       openChat, openStart,
       close, wake, sleep, hide, setMood, say, dismissBubble, pauseBubble, resumeBubble, explain, pointTo, remember,
     }),
-    [panel, asleep, hidden, mood, bubble, goto, spark, ask, reaction, askTopic, memory, dock, openChat, openStart, close, wake, sleep, hide, setMood, say, dismissBubble, pauseBubble, resumeBubble, explain, pointTo, remember],
+    [panel, asleep, hidden, mood, bubble, goto, spark, star, ask, reaction, askTopic, memory, dock, openChat, openStart, close, wake, sleep, hide, setMood, say, dismissBubble, pauseBubble, resumeBubble, explain, pointTo, remember],
   );
 
   return <C.Provider value={value}>{children}</C.Provider>;

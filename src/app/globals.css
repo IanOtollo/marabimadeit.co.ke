@@ -96,3 +96,11 @@ html::-webkit-scrollbar { width: 0; height: 0; display: none; }
 }
 .hero-in { animation: hero-in 0.55s cubic-bezier(0.16, 1, 0.3, 1) both; }
 @media (prefers-reduced-motion: reduce) { .hero-in { animation: none; } }
+
+/* A soft, brief ring on the main call to action while Marabi points at it. */
+@keyframes mm-pulse-ring {
+  0% { box-shadow: 0 0 0 0 hsl(var(--primary) / 0.55); }
+  70%, 100% { box-shadow: 0 0 0 16px hsl(var(--primary) / 0); }
+}
+.mm-pulse { animation: mm-pulse-ring 1.5s ease-out 4; }
+@media (prefers-reduced-motion: reduce) { .mm-pulse { animation: none; outline: 2px solid hsl(var(--primary) / 0.6); outline-offset: 3px; } }
