@@ -9,6 +9,7 @@ import { doors } from "@/data/site";
 import { projects, serialOf, zohoProjects, type DoorId, type Project } from "@/data/projects";
 import { Reveal, Section } from "@/components/ui/Reveal";
 import { CtaButton } from "@/components/ui/CtaButton";
+import { StackIcon } from "@/components/ui/StackIcon";
 import { cn, ease } from "@/lib/utils";
 
 const blurbs: Record<DoorId, string> = {
@@ -106,7 +107,8 @@ function Entry({ p, i }: { p: Project; i: number }) {
         )}
         <ul className="mt-6 flex flex-wrap gap-2">
           {p.stack.map((s) => (
-            <li key={s} className="rounded-lg border border-border px-3 py-1 text-xs text-muted-foreground">
+            <li key={s} className="inline-flex items-center gap-2 rounded-lg border border-border px-3 py-1 text-xs text-muted-foreground">
+              <StackIcon name={s} />
               {s}
             </li>
           ))}
