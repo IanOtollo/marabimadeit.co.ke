@@ -12,8 +12,18 @@ export const metadata: Metadata = {
   title: { default: `${site.name} | Websites, E-commerce, Software, CRM & ERP`, template: `%s | ${site.name}` },
   description:
     "Marabi Made It is a Nairobi studio building websites, e-commerce stores, custom software and CRM/ERP systems.",
-  openGraph: { title: site.name, description: "Websites, e-commerce, software and CRM/ERP from Nairobi.", type: "website", locale: "en_KE" },
-  robots: { index: true, follow: true },
+  alternates: { canonical: "/" },
+  applicationName: site.name,
+  openGraph: {
+    title: site.name,
+    description: "Websites, e-commerce, software and CRM/ERP from Nairobi.",
+    type: "website",
+    locale: "en_KE",
+    siteName: site.name,
+    url: "/",
+  },
+  twitter: { card: "summary_large_image", title: site.name, description: "Websites, e-commerce, software and CRM/ERP from Nairobi." },
+  robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 } },
 };
 
 export const viewport: Viewport = { themeColor: "#0b0d10" };
