@@ -16,13 +16,13 @@ export const metadata: Metadata = {
   applicationName: site.name,
   openGraph: {
     title: site.name,
-    description: "Websites, e-commerce, software and CRM/ERP from Nairobi.",
+    description: "Websites, e-commerce, software and CRM/ERP, built to look and work modern.",
     type: "website",
     locale: "en_KE",
     siteName: site.name,
     url: "/",
   },
-  twitter: { card: "summary_large_image", title: site.name, description: "Websites, e-commerce, software and CRM/ERP from Nairobi." },
+  twitter: { card: "summary_large_image", title: site.name, description: "Websites, e-commerce, software and CRM/ERP, built to look and work modern." },
   robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 } },
 };
 
