@@ -310,7 +310,7 @@ export const privacy: LegalDoc = {
           ["Communications", "Emails, call notes, meeting recordings only with your agreement, and project messages", "You and us"],
           ["Technical and security", "IP address, browser and device type, pages requested, date and time, referring page, and error records", "Your browser, automatically, recorded in server logs"],
           ["On-device preferences", "Your cookie choice and the state of the Marabi assistant, held in your browser storage (see our Cookie Policy)", "Your device, not sent to us"],
-          ["Analytics (only if you consent, not yet active)", "Pages viewed, approximate location from IP, device characteristics, how long you stayed", "Your browser, only after you click Allow"],
+          ["Analytics (only if you consent)", "Pages viewed, approximate location from IP, device characteristics, how long you stayed", "Your browser, only after you click Allow"],
         ],
       },
       note: "We do not knowingly collect sensitive personal data, national identity or passport numbers, bank card details or passwords. Please do not send them to us. Card payments on websites we build are handled by licensed payment providers, not by us.",
@@ -336,7 +336,7 @@ export const privacy: LegalDoc = {
           ["Keep accounting, tax and other records the law requires", "Compliance with a legal obligation", "Contract and billing"],
           ["Secure the Site, detect abuse and fix faults", "Our legitimate interest in the security and reliability of our systems, which does not override your rights", "Technical and security"],
           ["Remember your cookie choice and assistant state on your device", "Strictly necessary or functional storage you have requested; see Cookie Policy", "On-device preferences"],
-          ["Measure and improve how the Site is used (when activated)", "Your consent, which you can refuse or withdraw at any time", "Analytics"],
+          ["Measure and improve how the Site is used", "Your consent, which you can refuse or withdraw at any time", "Analytics"],
           ["Send you news or offers about our services", "Your consent only; every message has an unsubscribe link", "Identity and contact"],
           ["Establish, exercise or defend legal claims; enforce our agreements", "Our legitimate interest, and legal obligation where a court or authority requires it", "As relevant to the claim"],
         ],
@@ -392,7 +392,7 @@ export const privacy: LegalDoc = {
           ["Project communications and files", "Duration of the engagement and 12 months after, then deleted or returned, unless a longer period is agreed", "Support and warranty queries"],
           ["Server and security logs", "Up to 90 days", "Security investigation and fault finding"],
           ["Marketing contact details", "Until you unsubscribe, after which we keep only a minimal suppression record so we do not email you again", "To honour your opt-out"],
-          ["Analytics data (when activated)", "Up to 14 months", "Year-on-year comparison"],
+          ["Analytics data", "Up to 14 months", "Year-on-year comparison"],
           ["On-device preferences and draft briefs", "Stored only on your device until you clear them; we hold no copy", "Convenience"],
         ],
       },
@@ -473,7 +473,7 @@ export const privacy: LegalDoc = {
       id: "cookies",
       title: "Cookies and similar technologies",
       clauses: [
-        "We use only a small amount of browser storage to remember your cookie choice and the state of the Marabi assistant. We do not use advertising cookies. Analytics, if we activate it, will load only after you consent.",
+        "We use only a small amount of browser storage to remember your cookie choice and the state of the Marabi assistant. We do not use advertising cookies. Analytics (Google Analytics) loads only after you consent.",
         `Details of each item, what it does and how long it lasts are in our Cookie Policy at ${D}/cookies.`,
       ],
     },
@@ -519,7 +519,7 @@ export const cookies: LegalDoc = {
     "We use two small items of browser storage: one remembers your cookie choice, the other remembers how you use the Marabi assistant.",
     "Both are stored only on your device, in local storage, and neither is used to track you across other websites.",
     "We do not use advertising or cross-site tracking cookies and we do not sell data.",
-    "Analytics is not switched on. If we add it, it will load only after you click Allow, and not before.",
+    "Analytics is active, but only for visitors who click Allow. It will not load before you choose, or if you click No thanks.",
     "You can change your choice at any time with the Cookie settings link in the footer.",
   ],
   sections: [
@@ -563,18 +563,18 @@ export const cookies: LegalDoc = {
     },
     {
       id: "analytics",
-      title: "Analytics: not currently active",
+      title: "Analytics: Google Analytics, only with your consent",
       clauses: [
-        "We do not currently run analytics on the Site, and no analytics script is loaded.",
-        "If we decide to add privacy-conscious analytics to understand which pages are useful, it will load only after you click Allow on the cookie banner. If you click No thanks, or do nothing, it will not load. We will configure it to anonymise IP addresses and will not use it for advertising.",
-        "Before we switch analytics on, we will update this policy with the provider's name, the cookies or storage it sets, and their duration, and the cookie banner will ask for your choice again.",
+        "We use Google Analytics 4 (provided by Google) to understand which pages are useful. It is off by default: no analytics script is loaded until you click Allow.",
+        "If you click No thanks, or do nothing, it does not load. When it runs we anonymise IP addresses, switch off Google signals and ad personalisation, and do not use it for advertising. Google sets the cookies _ga and _ga_NNF1VWRSR0 in your browser to tell visits apart; they last up to two years, and we keep the resulting data for up to 14 months.",
+        "You can change your mind at any time with the Cookie settings link in the footer. Choosing No thanks stops measurement and clears the Google cookies from this site.",
       ],
       table: {
         head: ["Category", "Status", "Condition"],
         rows: [
           ["Strictly necessary", "In use", "Always on; required for the Site to respect your choice"],
           ["Functional (assistant)", "In use", "Only when you use the Marabi assistant"],
-          ["Analytics", "Not active", "Will load only after you click Allow"],
+          ["Analytics (Google Analytics)", "In use, with consent only", "Loads only after you click Allow"],
           ["Advertising and targeting", "Never used", "None. We do not use them"],
         ],
       },
@@ -616,7 +616,7 @@ export const cookies: LegalDoc = {
       id: "signals",
       title: "Browser signals",
       clauses: [
-        "We do not track you across websites, so there is nothing for a Do Not Track or Global Privacy Control signal to switch off. If we later introduce analytics, we will treat such signals as a refusal.",
+        "We do not track you across websites, so there is nothing for a Do Not Track or Global Privacy Control signal to switch off. We treat such signals as a refusal of analytics.",
       ],
     },
     {

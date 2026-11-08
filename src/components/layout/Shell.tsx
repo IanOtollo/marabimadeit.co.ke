@@ -5,6 +5,7 @@ import { useLenis } from "@/hooks/useLenis";
 import { Navbar } from "./Navbar";
 import { Footer } from "./Footer";
 import { CookieBanner } from "./CookieBanner";
+import { Analytics } from "./Analytics";
 import { ScrollRail } from "./ScrollRail";
 import { MarabiProvider, useMarabi } from "@/components/bot/MarabiProvider";
 import { Orb, Sparks } from "@/components/bot/Orb";
@@ -38,6 +39,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
         <Orb />
         <MarabiPanel />
         <CookieBanner />
+        <Analytics />
       </ContactBridge>
     </MarabiProvider>
   );

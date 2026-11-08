@@ -28,6 +28,8 @@ export const site = {
   /** Where emailed enquiries go. The studio inbox. */
   enquiryTo: "marabimadeit@gmail.com",
   location: "Nairobi, Kenya",
+  /** Google Analytics 4 measurement ID. Public by design (it is visible in every page request); loads only after the visitor clicks Allow. */
+  analyticsId: "G-NNF1VWRSR0",
   timezone: "Africa/Nairobi",
   legalEntity: "Marabi Made It",
   updated: "5 November 2026",
