@@ -55,6 +55,8 @@ function Chat() {
     if (/start a project|send it to the team/i.test(label)) return { label, start: true };
     if (/what can you build/i.test(label)) return { label, topic: "overview" };
     if (/how do you work/i.test(label)) return { label, topic: "process" };
+    if (/about ian/i.test(label)) return { label, topic: "ian" };
+    if (/about aineah/i.test(label)) return { label, topic: "aineah" };
     return { label };
   };
 
@@ -95,7 +97,10 @@ function Chat() {
     if (!v) return;
     setText("");
     const talk = smallTalk(v, m.name);
-    if (talk) return say(talk, v);
+    if (talk) {
+      if (talk.name) m.remember({ name: talk.name });
+      return say(talk, v);
+    }
     const t = matchTopic(v);
     const fu = !t || v.split(/\s+/).length <= 7 ? followUp(v, lastTopic.current) : null;
     if (fu) return say(fu, v);

@@ -307,6 +307,7 @@ export const partners: Partner[] = [
   { name: "Ethereal Dayo", logo: "/partners/ethereal-dayo.svg", ratio: 3.061 },
   { name: "Mutende Pharmacare", logo: "/partners/mutende-pharmacare.svg", ratio: 4.63 },
   { name: "Ficus & Figs", logo: "/partners/ficus-and-figs.svg", ratio: 1, scale: 1.45 },
+  { name: "Roam & Rest", logo: "/partners/roam-and-rest.png", ratio: 1.194, scale: 1.4 },
   { name: "Dualpix Communications", logo: "/partners/dualpix-communications.svg", ratio: 3.858 },
   { name: "Epimax Kenya", logo: "/partners/epimax-kenya.svg", ratio: 1.003, scale: 1.6 },
   { name: "Zoho", logo: "/partners/zoho.svg", ratio: 2.288 },

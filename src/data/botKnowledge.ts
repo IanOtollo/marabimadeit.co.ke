@@ -158,7 +158,7 @@ export const topics: Topic[] = [
     keywords: ["portfolio", "past work", "case study", "case studies", "examples", "projects", "references", "clients", "worked with"],
     short: "Real projects across all four services, live where we can show them.",
     answer:
-      "The Portfolio page shows real work: websites such as Ficus & Figs and Jewel in the Mines, stores such as Scents by Naire and Mutende Pharmacare, and private systems like point-of-sale and guest management, which we describe but never show to protect those businesses. Ask and we will connect you with a past client.",
+      "The Portfolio page shows real work: websites such as Ficus & Figs, Roam & Rest and Jewel in the Mines, stores such as Scents by Naire and Mutende Pharmacare, and private systems like point-of-sale and guest management, which we describe but never show to protect those businesses. Ask and we will connect you with a past client.",
     follow: ["start", "team"],
     link: { href: "/portfolio", label: "See our portfolio" },
   },
@@ -309,7 +309,7 @@ export const details: Record<string, string[]> = {
   security: ["MFA on admin accounts, backups and regular patching.", "An NDA is signed before you share anything sensitive.", "Our Security page explains how to report a vulnerability to us."],
   start: ["A short page of four sections: about you, the project, scope and timing, and notes.", "Five details are required; everything else is optional.", "We'll get back to you, then arrange a first call."],
   quote: ["A short call to understand your scope.", "A written quote that fits what you actually need.", "Third-party costs such as domains and SMS are listed separately."],
-  partners: ["Jewel in the Mines, Ethereal Dayo, Mutende Pharmacare, Ficus & Figs, Dualpix Communications, Epimax Kenya, IKA360 and Zoho.", "Their work spans publishing, retail, hospitality, healthcare, communications and software.", "A brand joins the wall only after we have worked together."],
+  partners: ["Jewel in the Mines, Ethereal Dayo, Mutende Pharmacare, Ficus & Figs, Roam & Rest, Dualpix Communications, Epimax Kenya, IKA360 and Zoho.", "Their work spans publishing, retail, hospitality, healthcare, communications and software.", "A brand joins the wall only after we have worked together."],
   story: ["From evening projects to small client work to a studio with a process.", "The about page walks through it in five moments.", "Our name is our signature: Marabi made it."],
   formwrite: ["One or two plain sentences are enough.", "Say who it is for and what it should do, not how to build it.", "A concrete example appears under the box and changes with the service you pick."],
   formservice: ["Pick the closest one: you can change it any time before sending.", "Not sure yet is a perfectly good answer.", "We will confirm the right approach on the first call."],
@@ -322,10 +322,72 @@ export const details: Record<string, string[]> = {
 
 const norm = (s: string) => s.toLowerCase().replace(/[^a-z0-9\s']/g, " ").replace(/\s+/g, " ").trim();
 
+const NOT_NAMES = new Set(("a an the not no yes yeah yep very so just here there from in at on for to with of and or but looking interested trying wondering want need new fine good great well ok okay sure sorry glad happy sad tired busy back also still really quite pretty doing going coming working building starting planning thinking hoping curious ready late early done alone human bot ai real person sure about into out up down now then too actually basically currently already always never maybe hungry bored excited confused lost stuck online new owner client customer student developer designer manager founder cofounder myself").split(" "));
+
+/** Pulls a first name (and optional surname) out of "I am Ian", "my name is Grace Wanjiku", "me Ian", "call me Sam". */
+function findName(input: string): { first: string; last?: string } | null {
+  const clean = input.replace(/[‘’]/g, "'").trim();
+  const strong = /\b(?:my name(?: is|'s)?|name's|call me|they call me|this is|i go by)\s+([A-Za-z][A-Za-z'-]{1,19})(?:\s+([A-Za-z][A-Za-z'-]{1,19}))?/i;
+  const weak = /^(?:(?:hi|hello|hey|habari|sasa|hola)\b[\s,.!]*)?(?:i am|i'm|im|it's|its|me)\s+([A-Za-z][A-Za-z'-]{1,19})(?:\s+([A-Za-z][A-Za-z'-]{1,19}))?/i;
+  const known = /^(ian|aineah|otollo|marabi)$/i;
+  const ok = (w: string | undefined, needCap: boolean, allowKnown = true) => {
+    if (!w) return false;
+    const l = w.toLowerCase();
+    if (NOT_NAMES.has(l) || /(ing|ly)$/.test(l) || (/ed$/.test(l) && l.length > 6)) return false;
+    return (allowKnown && known.test(w)) || !needCap || /^[A-Z]/.test(w);
+  };
+  const sm = clean.match(strong);
+  const wm = sm ? null : clean.match(weak);
+  const m = sm ?? wm;
+  if (!m || !ok(m[1], !!wm)) return null;
+  const cap = (w: string) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase();
+  const last = m[2] && ok(m[2], true, true) && /^[A-Z]/.test(m[2]) ? cap(m[2]) : undefined;
+  return { first: cap(m[1]), last };
+}
+
+/** Meeting someone: greet by name, and say so when it is a name we know from the studio. */
+function introduction(input: string): { text: string; chips?: string[]; name: string } | null {
+  const n = findName(input);
+  if (!n) return null;
+  const name = n.first;
+  const l = name.toLowerCase();
+  const claimsFounder = /\b(co-?founder|founder|i built you|i made you|i work here|from the studio)\b/i.test(input);
+  const pick = <T,>(a: T[]) => a[(name.length + input.length) % a.length];
+  if (l === "ian") {
+    if (n.last?.toLowerCase() === "otollo" || claimsFounder)
+      return { name, text: "Ian, our own co-founder? Then I am talking to the boss. Hello, and thank you for building me. Do tell me if I get anything wrong about the studio.", chips: ["Tell me about Ian", "What can you build?"] };
+    return { name, text: pick([`Nice to meet you, Ian. Funny thing, our co-founder is also called Ian: Ian Otollo, who builds alongside Aineah. Any relation?`, `Hello Ian, good to meet you. You share a name with our co-founder, Ian Otollo. Good name to have. What brings you by today?`]), chips: ["Tell me about Ian", "What can you build?", "Start a project"] };
+  }
+  if (l === "aineah") {
+    if (n.last?.toLowerCase() === "marabi" || claimsFounder)
+      return { name, text: "Aineah, the founder himself. Welcome back to your own studio. I have been keeping the place tidy.", chips: ["Tell me about Aineah", "What can you build?"] };
+    return { name, text: "Nice to meet you, Aineah. That is the name of our founder, Aineah Marabi, who leads the engineering. Are you perhaps family?", chips: ["Tell me about Aineah", "What can you build?", "Start a project"] };
+  }
+  if (l === "marabi") return { name, text: "Marabi, like the studio. Nice to meet you. Our founder is Aineah Marabi, so I have to ask: any relation?", chips: ["Tell me about Aineah", "What can you build?"] };
+  const first = pick([
+    `Nice to meet you, ${name}. What brings you by today: a website, a store, something custom?`,
+    `Good to meet you, ${name}. I am Marabi 2.0. Are you thinking about a project, or just having a look around?`,
+    `Hello ${name}, welcome. Tell me what you have in mind and I will point you the right way.`,
+  ]);
+  return { name, text: first, chips: ["What can you build?", "How do you work?", "Start a project"] };
+}
+
 /** Greetings, thanks, "who are you": answered like a person, not a database. */
-export function smallTalk(input: string, name?: string): { text: string; chips?: string[] } | null {
+export function smallTalk(input: string, name?: string): { text: string; chips?: string[]; name?: string } | null {
+  const intro = introduction(input);
+  if (intro) return intro;
   const t = norm(input).replace(/'/g, " ").replace(/\s+/g, " ");
   const who = name ? `, ${name}` : "";
+  if (/\b(nice|good|great|pleasure) to (meet|know) you\b|\bpleasure(s)? (is )?mine\b|\bthe pleasure\b/.test(t))
+    return { text: `Likewise${who}. What can I help you with today?`, chips: ["What can you build?", "How do you work?", "Start a project"] };
+  if (/(what s|whats|what is) my name|who am i|do you (remember|know) (me|my name)|remember me/.test(t))
+    return name
+      ? { text: `You are ${name}. I keep that on this device only, so I remember you when you come back.`, chips: ["Start a project"] }
+      : { text: "You have not told me yet. What should I call you?" };
+  if (/\b(i have a question|can i ask|may i ask|quick question)\b/.test(t) && t.split(" ").length <= 8)
+    return { text: "Of course, ask away.", chips: ["What can you build?", "How do you work?"] };
+  if (/^(and you|how about you|what about you)\b/.test(t))
+    return { text: "I am well, thanks. Mostly waiting for someone to ask me something interesting. What can I do for you?", chips: ["What can you build?", "Start a project"] };
   if (/^(hi|hello|hey|habari|sasa|mambo|niaje|hola|good (morning|afternoon|evening))\b/.test(t))
     return { text: `Habari${who}! What can I help you with: a service, how we work, or starting a project?`, chips: ["What can you build?", "How do you work?", "Start a project"] };
   if (/\b(thanks|thank you|asante|cheers|appreciate)\b/.test(t)) return { text: `Karibu${who}. Anything else you would like to know?`, chips: ["Start a project", "How do you work?"] };
@@ -335,7 +397,7 @@ export function smallTalk(input: string, name?: string): { text: string; chips?:
   if (/(speak|talk) to (a |the )?(human|person|someone|team|founder)|call (me|you)|phone number|whatsapp/.test(t))
     return { text: "Of course. The quickest way is to start a brief and send it by WhatsApp, or call and message from the icons on the home page. We reply fast.", chips: ["Start a project"] };
   if (/\b(how are you|how are things|how s it going|how is it going|how do you do|u good|you good|whats up|what s up|wassup)\b/.test(t))
-    return { text: `I am doing well${who}, thank you for asking. It is a good day when someone drops by. How can I help?`, chips: ["What can you build?", "Start a project"] };
+    return { text: `I am doing well${who}, thank you for asking. It is a good day when someone drops by. And you? How can I help?`, chips: ["What can you build?", "Start a project"] };
   if (/\b(good|great|fine|well|okay|ok|not bad|nice)\b/.test(t) && t.split(" ").length <= 4 && /^(i m|im|i am|am|doing|all|pretty|very|quite)\b/.test(t))
     return { text: "Glad to hear it. Is there something about the studio or a project I can help with?", chips: ["What can you build?", "How do you work?"] };
   if (/\b(tired|sad|stressed|bad day|not good|not well|overwhelmed)\b/.test(t) && t.split(" ").length <= 8)
