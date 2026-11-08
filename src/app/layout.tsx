@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: { default: `${site.name} | Websites, E-commerce, Software, CRM & ERP`, template: `%s | ${site.name}` },
   description:
-    "Marabi Made It is a Nairobi studio building websites, e-commerce stores, custom software and CRM/ERP systems.",
+    "Marabi Made It is a modern studio building websites, e-commerce stores, custom software and CRM/ERP systems.",
   alternates: { canonical: "/" },
   applicationName: site.name,
   openGraph: {

@@ -10,7 +10,7 @@ import { MarabiHint } from "@/components/bot/MarabiHint";
 
 export const metadata: Metadata = {
   title: "About",
-  description: "Marabi Made It is a Nairobi studio run by two brothers, Ian Otollo and Aineah Marabi. Meet the people behind every project.",
+  description: "Marabi Made It is a modern studio run by two brothers, Ian Otollo and Aineah Marabi. Meet the people behind every project.",
 };
 
 const values = [
@@ -28,7 +28,7 @@ export default function AboutPage() {
           <Eyebrow>About Marabi Made It</Eyebrow>
           <div className="flex flex-wrap items-center gap-4"><h1 className="max-w-5xl text-5xl tracking-tighter sm:text-6xl lg:text-7xl">Two brothers. One studio. One signature.</h1><MarabiHint topic="team" label="Ask Marabi about the team" /></div>
           <p className="mt-8 max-w-3xl text-lg text-muted-foreground">
-            Marabi Made It is a Nairobi studio that builds websites, e-commerce stores, custom software and CRM/ERP systems. We keep the team small on purpose: the people you meet at the start are the people who design, build and support your work.
+            Marabi Made It is a modern studio that builds websites, e-commerce stores, custom software and CRM/ERP systems. We keep the team small on purpose: the people you meet at the start are the people who design, build and support your work.
           </p>
           <p className="mt-4 max-w-3xl text-lg text-muted-foreground">
             The name says it: Marabi made it. We put it on every project because it is a promise as much as a signature. The job gets finished, properly, and you can see it.

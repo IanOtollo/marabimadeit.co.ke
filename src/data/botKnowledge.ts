@@ -185,7 +185,7 @@ export const topics: Topic[] = [
     id: "overview",
     title: "About Marabi Made It",
     keywords: ["marabi made it", "what do you do", "what is this", "studio", "company", "services", "offer"],
-    short: "A small Nairobi studio that builds the digital side of your business.",
+    short: "A small modern studio that builds the digital side of your business.",
     answer:
       "We design and build websites, e-commerce stores, custom software and CRM/ERP systems, and we stay on after launch to support them. The four services share one process, so you get the same standard whichever you choose.",
     follow: ["websites", "ecommerce", "software", "crm-erp"],
@@ -357,7 +357,7 @@ export function smallTalk(input: string, name?: string): { text: string; chips?:
   if (/\b(weather|football|politics|news|bitcoin|stock)\b/.test(t))
     return { text: "That is outside my patch, I only know the studio. I can tell you about our services, our process or how to start a project.", chips: ["What can you build?", "Start a project"] };
   if (/\b(where are you|where do you live|where are you based|location|nairobi)\b/.test(t) && t.split(" ").length <= 6)
-    return { text: "We are a Nairobi studio and work with clients across Kenya and beyond, mostly remotely. Calls and WhatsApp work well.", chips: ["Start a project"] };
+    return { text: "We are a modern studio based in Nairobi and work with clients across Kenya and beyond, mostly remotely. Calls and WhatsApp work well.", chips: ["Start a project"] };
   if (/\b(what can you do|help me|can you help|what do you know)\b/.test(t))
     return { text: "I can explain our services, how we work and the partners we have built with, help you shape a project brief, or pass a message to the founders.", chips: ["What can you build?", "How do you work?", "Start a project"] };
   if (/\b(do you (sleep|eat|dream)|are you (alive|happy|sad|tired))\b/.test(t))
