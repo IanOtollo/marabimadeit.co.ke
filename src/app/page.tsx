@@ -12,7 +12,7 @@ export default function Home() {
     "@context": "https://schema.org",
     "@type": "ProfessionalService",
     name: site.name,
-    url: `https://${site.domain}`,
+    url: site.url,
     email: site.email,
     slogan: site.tagline.replace(".", ""),
     areaServed: "KE",

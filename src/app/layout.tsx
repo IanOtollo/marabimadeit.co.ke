@@ -8,7 +8,7 @@ const display = Fraunces({ subsets: ["latin"], variable: "--font-display", displ
 const body = Jost({ subsets: ["latin"], variable: "--font-body", display: "swap" });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(`https://${site.domain}`),
+  metadataBase: new URL(site.url),
   title: { default: `${site.name} | Websites, E-commerce, Software, CRM & ERP`, template: `%s | ${site.name}` },
   description:
     "Marabi Made It is a Nairobi studio building websites, e-commerce stores, custom software and CRM/ERP systems.",

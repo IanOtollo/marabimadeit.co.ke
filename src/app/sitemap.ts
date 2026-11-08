@@ -7,7 +7,7 @@ const lastModified = new Date("2026-11-08");
 const legal = ["/terms", "/privacy", "/cookies", "/engagement", "/acceptable-use", "/security", "/accessibility", "/licenses"];
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const base = `https://${site.domain}`;
+  const base = site.url;
   const entry = (
     path: string,
     priority: number,

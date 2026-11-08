@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { site } from "@/data/site";
 
 export default function robots(): MetadataRoute.Robots {
-  const base = `https://${site.domain}`;
+  const base = site.url;
   return {
     rules: { userAgent: "*", allow: "/", disallow: ["/api/"] },
     sitemap: `${base}/sitemap.xml`,

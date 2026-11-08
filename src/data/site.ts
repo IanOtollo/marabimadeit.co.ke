@@ -20,6 +20,8 @@ export const site = {
   short: "Marabi",
   tagline: "MarabiMadeIt.", // single source: hero, footer, loader, card backs, structured data
   domain: "marabimadeit.co.ke",
+  /** Canonical address. The bare domain redirects here (see next.config.mjs). */
+  url: "https://www.marabimadeit.co.ke",
   email: "marabimadeit@gmail.com",
   phone: "+254 758 333996", // the main site line (footer, contact page): Aineah's number
   whatsapp: "254758333996", // digits only, international format, no plus. The assistant sends briefs here.

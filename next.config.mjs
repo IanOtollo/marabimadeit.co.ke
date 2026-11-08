@@ -5,6 +5,7 @@ const nextConfig = {
   distDir: process.env.BUILD_DIR || ".next",
   async redirects() {
     return [
+      { source: "/:path*", has: [{ type: "host", value: "marabimadeit.co.ke" }], destination: "https://www.marabimadeit.co.ke/:path*", permanent: true },
       { source: "/work", destination: "/portfolio", permanent: true },
       { source: "/pricing", destination: "/", permanent: true },
     ];

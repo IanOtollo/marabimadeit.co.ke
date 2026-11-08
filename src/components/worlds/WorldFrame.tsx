@@ -12,7 +12,7 @@ export function WorldFrame({ door, service, children }: { door: Door; service: S
     "@context": "https://schema.org",
     "@type": "Service",
     name: door.title,
-    provider: { "@type": "ProfessionalService", name: site.name, url: `https://${site.domain}` },
+    provider: { "@type": "ProfessionalService", name: site.name, url: site.url },
     areaServed: "KE",
     description: service.intro,
   };
