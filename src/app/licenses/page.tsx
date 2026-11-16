@@ -3,6 +3,7 @@ import { Eyebrow, Reveal, Section } from "@/components/ui/Reveal";
 
 export const metadata: Metadata = {
   title: "Open-source credits",
+  alternates: { canonical: "/licenses" },
   description: "The open-source software and fonts that power marabimadeit.co.ke, with their licences.",
 };
 

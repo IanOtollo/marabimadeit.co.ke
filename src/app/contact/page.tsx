@@ -8,6 +8,7 @@ import { MarabiHint } from "@/components/bot/MarabiHint";
 
 export const metadata: Metadata = {
   title: "Contact",
+  alternates: { canonical: "/contact" },
   description: "Start a project with Marabi Made It. Tell us what you want to build and we'll get back to you.",
 };
 

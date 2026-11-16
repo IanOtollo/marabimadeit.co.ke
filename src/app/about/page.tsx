@@ -10,6 +10,7 @@ import { MarabiHint } from "@/components/bot/MarabiHint";
 
 export const metadata: Metadata = {
   title: "About",
+  alternates: { canonical: "/about" },
   description: "Marabi Made It is a modern studio run by two brothers, Ian Otollo and Aineah Marabi. Meet the people behind every project.",
 };
 
